@@ -77,3 +77,8 @@ class Staff(db.Model, SerializerMixin):
     serialize_rules = ("-station.staff",)
 
 
+
+    #####################################
+    # TEST MODELS, DELETE BEFORE MERGE
+
+
