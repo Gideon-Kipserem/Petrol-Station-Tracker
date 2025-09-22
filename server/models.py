@@ -57,11 +57,23 @@ class Pump(db.Model, SerializerMixin):
     serialize_rules = ('-station.pumps', '-sales.pump')
 
     @validates('pump_number')
-    def validate_pump_number(self, key, pump_number):
-        if not isinstance(pump_number, int) or pump_number <= 0:
-            raise ValueError("Pump number must be a positive integer")
-        return pump_number
+    def validate_pump_number(self, key, value):
+        if not value.lower().startswith("pump"):
+            raise ValueError("Pump_number must start with 'Pump' e.g 'Pump 3'" )
+        return value
 
 
 class Staff(db.Model, SerializerMixin):
-    pass
+    __tablename__ = "staff"
+
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String, nullable = False)
+    role = db.Column(db.String(9), nullable = False)
+    station_id = db.Column(db.Integer, db.ForeignKey("stations.id"))
+
+    station = db.relationship("Station", back_populates="staff")
+    sales  = db.relationship("SaleStaff", back_populates="staff", cascade = "all, delete-orphan")
+
+    serialize_rules = ("-station.staff",)
+
+
