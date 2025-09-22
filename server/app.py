@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from models import Station, Pump, Staff
-
 from flask_restful import Resource
 
 # Local imports
@@ -55,8 +54,6 @@ class StationByID(Resource):
         db.session.commit()
         return "", 204
     
-api.add_resource(Station, "/stations", "/stations/<int:id>")
-
 
 class Pump(Resource):
     def get_pump(self, id=None):
@@ -99,7 +96,6 @@ class Pump(Resource):
         db.session.commit()
         return "", 204
     
-api.add_resource(Pump, '/pumps')
 
 class Staff(Resource):
     def get(self, id=None):
@@ -120,10 +116,28 @@ class Staff(Resource):
         db.session.add(staff)
         db.session.commit()
         return staff.to_dict(), 201
-
     
-    
+    def patch(self, id):
+        staff = Staff.query.get_or_404(id)
+        data = request.get_json()
+        if "name" in data:
+            staff.name = data["name"]
+        if "role" in data:
+            staff.role = data["role"]
+        if "station_id" in data:
+            staff.station_id = data["station_id"]
+        db.session.commit()
+        return staff.to_dict()
 
+    def delete(self, id):
+        staff = Staff.query.get_or_404(id)
+        db.session.delete(staff)
+        db.session.commit()
+        return "", 204        
+
+api.add_resource(Station, "/stations", "/stations/<int:id>")
+api.add_resource(Pump, "/pumps", "/pumps/<int:id>")
+api.add_resource(Staff, "/staff", "/staff/<int:id>")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
