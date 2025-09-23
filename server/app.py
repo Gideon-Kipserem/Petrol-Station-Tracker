@@ -12,3 +12,5 @@ migrate = Migrate(app, db)
 @app.route("/")
 def home():
     return jsonify({"message": "Petrol Station Tracker API is running"})
+
+    
