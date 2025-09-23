@@ -15,7 +15,7 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
 
   const validationSchema = Yup.object({
     fuelType: Yup.string()
-      .oneOf([ "Diesel", "Petrol", "Kerosene"], "Invalid fuel type")
+      .oneOf([ "Diesel", "Petrol", "Kerosene", "Premium", "Regular"], "Invalid fuel type")
       .required("Fuel type is required"),
     litres: Yup.number()
       .positive("Litres must be greater than 0")
