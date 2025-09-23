@@ -13,13 +13,12 @@ class Station(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     location = db.Column(db.String(200), nullable=False)
-    # created_at = db.Column(db.DateTime, server_default=db.func.now())
-    # updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+    
 
 
-    pumps = db.relationship('Pump', backref='station',
+    pumps = db.relationship('Pump', back_populates='station',
                             cascade='all, delete-orphan')
-    staff = db.relationship('Staff', backref='station',
+    staff = db.relationship('Staff', back_populates='station',
                             cascade='all, delete-orphan')
 
  
@@ -36,11 +35,6 @@ class Station(db.Model, SerializerMixin):
             raise ValueError("Station name must be unique")
         return name.strip()
 
-    # @validates('location')
-    # def validate_name(self, key, location):
-    #     if not location or len(location.strip()) < 1:
-    #         raise ValueError("Station location must be at least 1 character long")
-    #     return location.strip()
 
 
 class Pump(db.Model, SerializerMixin):
@@ -80,5 +74,17 @@ class Staff(db.Model, SerializerMixin):
 
     #####################################
     # TEST MODELS, DELETE BEFORE MERGE
+class Sale(db.Model):
+    __tablename__ = "sales"
+    id = db.Column(db.Integer, primary_key=True)
+    pump_id = db.Column(db.Integer, db.ForeignKey("pumps.id"))
+    pump = db.relationship("Pump", back_populates="sales")
+
+class SaleStaff(db.Model):
+    __tablename__ = "sale_staff"
+    id = db.Column(db.Integer, primary_key=True)
+    sale_id = db.Column(db.Integer, db.ForeignKey("sales.id"))
+    staff_id = db.Column(db.Integer, db.ForeignKey("staff.id"))
+    staff = db.relationship("Staff", back_populates="sales") 
 
 

@@ -2,24 +2,25 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from models import Station, Pump, Staff
+
 from flask_restful import Resource
 
 # Local imports
 from config import app, db, api
 # Add your model imports
-
+from models import Station, Pump, Staff
 
 # Views go here!
 
-class Station(Resource):
+
+class StationResource(Resource):
     def get(self, id=None):
         if id:
             station = Station.query.get_or_404(id)
             return station.to_dict()
-        else:
-            stations = Station.query.all()
-            return [s.to_dict() for s in stations]
+        stations = Station.query.all()
+
+        return [s.to_dict() for s in stations]
 
     def post(self):
         data = request.get_json()
@@ -28,13 +29,6 @@ class Station(Resource):
         db.session.add(new_station)
         db.session.commit()
         return make_response(new_station.to_dict(), 201)
-
-class StationByID(Resource):
-    def get(self, id):
-        station = Station.query.get(id)
-        if not station:
-            return make_response({"error":"Station not found"}, 404)
-        return make_response(station.to_dict(), 200)
 
     def patch(self, id):
         station = Station.query.get_or_404(id)
@@ -53,30 +47,30 @@ class StationByID(Resource):
         db.session.delete(station)
         db.session.commit()
         return "", 204
-    
 
-class Pump(Resource):
-    def get_pump(self, id=None):
+
+class PumpResource(Resource):
+    def get_pump(self, id):
         if id:
             pump = Pump.query.get_or_404(id)
             return pump.to_dict()
         else:
             pumps = Pump.query.all()
             return [p.to_dict() for p in pumps]
-        
+
     def post(self):
         data = request.get_json()
 
-        new_pump=Pump(
-            pump_number = data['pump'],
-            fuel_type = data['fuel_type'],
-            station_id = data['station_id']
+        new_pump = Pump(
+            pump_number=data['pump'],
+            fuel_type=data['fuel_type'],
+            station_id=data['station_id']
         )
         db.session.add(new_pump)
         db.session.commit()
 
         return make_response(new_pump.to_dict(), 201)
-    
+
     def patch(self, id):
         pump = Pump.query.get_or_404(id)
         data = request.get_json()
@@ -95,17 +89,17 @@ class Pump(Resource):
         db.session.delete(pump)
         db.session.commit()
         return "", 204
-    
 
-class Staff(Resource):
-    def get(self, id=None):
+
+class StaffResource(Resource):
+    def get(self, id):
         if id:
             staff = Staff.query.get_or_404(id)
             return staff.to_dict()
         else:
             all_staff = Staff.query.all()
             return [s.to_dict() for s in all_staff]
-        
+
     def post(self):
         data = request.get_json()
         staff = Staff(
@@ -116,7 +110,7 @@ class Staff(Resource):
         db.session.add(staff)
         db.session.commit()
         return staff.to_dict(), 201
-    
+
     def patch(self, id):
         staff = Staff.query.get_or_404(id)
         data = request.get_json()
@@ -133,12 +127,12 @@ class Staff(Resource):
         staff = Staff.query.get_or_404(id)
         db.session.delete(staff)
         db.session.commit()
-        return "", 204        
+        return "", 204
 
-api.add_resource(Station, "/stations", "/stations/<int:id>")
-api.add_resource(Pump, "/pumps", "/pumps/<int:id>")
-api.add_resource(Staff, "/staff", "/staff/<int:id>")
+
+api.add_resource(StationResource, "/stations", "/stations/<int:id>")
+api.add_resource(PumpResource, "/pumps", "/pumps/<int:id>")
+api.add_resource(StaffResource, "/staff", "/staff/<int:id>")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
-
