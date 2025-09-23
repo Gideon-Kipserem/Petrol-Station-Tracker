@@ -16,3 +16,25 @@ class Pump(db.Model):
             "id": self.id,
             "pump_number": self.pump_number
         }
+class Sale(db.Model):
+    __tablename__ = "sales"
+
+    id = db.Column(db.Integer, primary_key=True)
+    fuel_type = db.Column(db.String(50), nullable=False)
+    litres = db.Column(db.Float, nullable=False)
+    price_per_litre = db.Column(db.Float, nullable=False)
+    total_amount = db.Column(db.Float, nullable=False)
+    sale_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    pump_id = db.Column(db.Integer, db.ForeignKey("pumps.id"), nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "fuel_type": self.fuel_type,
+            "litres": self.litres,
+            "price_per_litre": self.price_per_litre,
+            "total_amount": self.total_amount,
+            "sale_timestamp": self.sale_timestamp.isoformat(),
+            "pump": self.pump.to_dict() if self.pump else None
+        }   
