@@ -14,3 +14,13 @@ export async function getAllStations() {
 }
 
 // Add station
+export async function addStation(station) {
+    const res = await fetch(BASE_URL, {
+        method: "POST",
+        headers: {"Content-Type":"application/json" },
+        body: JSON.stringify(station),
+    });
+    if (!res.ok) throw new Error("Failed to add station");
+    return await res.json();
+}
+
