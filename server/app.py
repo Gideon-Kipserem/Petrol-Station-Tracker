@@ -63,3 +63,11 @@ def get_pumps():
     pumps = Pump.query.all()
     return jsonify([pump.to_dict() for pump in pumps])
 
+# Add pump
+@app.route("/pumps", methods=["POST"])
+def create_pump():
+    data = request.json
+    pump = Pump(pump_number=data["pump_number"])
+    db.session.add(pump)
+    db.session.commit()
+    return jsonify(pump.to_dict()), 201
