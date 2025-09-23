@@ -3,6 +3,27 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+class UserSale(db.Model):
+    __tablename__ = 'user_sales'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), primary_key=True)
+    contribution = db.Column(db.Integer)  # example user-submitted attribute
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+     return {"user_id": self.user_id, "sale_id": self.sale_id, "contribution": self.contribution}
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    sales = db.relationship('Sale', secondary='user_sales', back_populates='users')
+
+    def to_dict(self):
+     return {"id": self.id, "name": self.name}
+
+
 class Pump(db.Model):
     __tablename__ = "pumps"
 
@@ -16,6 +37,8 @@ class Pump(db.Model):
             "id": self.id,
             "pump_number": self.pump_number
         }
+
+
 class Sale(db.Model):
     __tablename__ = "sales"
 
@@ -37,4 +60,4 @@ class Sale(db.Model):
             "total_amount": self.total_amount,
             "sale_timestamp": self.sale_timestamp.isoformat(),
             "pump": self.pump.to_dict() if self.pump else None
-        }   
+        }
