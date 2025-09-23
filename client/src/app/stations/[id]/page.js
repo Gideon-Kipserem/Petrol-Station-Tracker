@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { getStationById } from "../../Lib/api.js";
+import { getStationById, updateStation, deleteStation } from "../../Lib/api.js";
 import PumpManager from "./PumpManager";
 import StaffManager from "./StaffManager";
 
@@ -76,7 +76,7 @@ export default function StationDetail() {
 
       {/* Staff Manager */}
       <div className="mt-6">
-        <StaffManager stationId={stationId} staff={station.staff} />
+        <StaffManager stationId={stationId} initialStaff={station.staff} />
       </div>
     </div>
   );

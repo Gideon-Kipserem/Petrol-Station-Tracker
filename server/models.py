@@ -23,9 +23,10 @@ class Station(db.Model, SerializerMixin):
     sales = db.relationship('Sale', backref='station', lazy=True, cascade='all, delete-orphan')
     fuel_inventory = db.relationship('FuelInventory', backref='station', lazy=True, cascade='all, delete-orphan')
     staff = db.relationship('Staff', backref='station', lazy=True, cascade='all, delete-orphan')
+    pumps = db.relationship('Pump', back_populates='station', lazy=True, cascade='all, delete-orphan')
     
     # Serialization rules
-    serialize_rules = ('-sales.station', '-fuel_inventory.station', '-staff.station')
+    serialize_rules = ('-sales.station', '-fuel_inventory.station', '-staff.station', '-pumps.station')
     
     def __repr__(self):
         return f'<Station {self.name}>'
@@ -141,9 +142,8 @@ class Pump(db.Model, SerializerMixin):
     station_id = db.Column(db.Integer, db.ForeignKey("stations.id"))  
 
     station = db.relationship("Station", back_populates="pumps")
-    sales = db.relationship('Sale', back_populates='pump', cascade='all, delete-orphan')
 
-    serialize_rules = ('-station.pumps', '-sales.pump')
+    serialize_rules = ('-station.pumps',)
 
     @validates('pump_number')
     def validate_pump_number(self, key, value):
@@ -152,32 +152,4 @@ class Pump(db.Model, SerializerMixin):
         return value
 
 
-class Staff(db.Model, SerializerMixin):
-    __tablename__ = "staff"
 
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String, nullable = False)
-    role = db.Column(db.String(9), nullable = False)
-    station_id = db.Column(db.Integer, db.ForeignKey("stations.id"))
-
-    station = db.relationship("Station", back_populates="staff")
-    sales  = db.relationship("SaleStaff", back_populates="staff", cascade = "all, delete-orphan")
-
-    serialize_rules = ("-station.staff",)
-
-
-
-    #####################################
-    # TEST MODELS, DELETE BEFORE MERGE
-class Sale(db.Model):
-    __tablename__ = "sales"
-    id = db.Column(db.Integer, primary_key=True)
-    pump_id = db.Column(db.Integer, db.ForeignKey("pumps.id"))
-    pump = db.relationship("Pump", back_populates="sales")
-
-class SaleStaff(db.Model):
-    __tablename__ = "sale_staff"
-    id = db.Column(db.Integer, primary_key=True)
-    sale_id = db.Column(db.Integer, db.ForeignKey("sales.id"))
-    staff_id = db.Column(db.Integer, db.ForeignKey("staff.id"))
-    staff = db.relationship("Staff", back_populates="sales")

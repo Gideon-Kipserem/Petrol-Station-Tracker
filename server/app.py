@@ -193,8 +193,6 @@ class StationResource(Resource):
 
 # Register API resources
 api.add_resource(DashboardResource, '/api/dashboard')
-api.add_resource(StationsResource, '/api/stations')
-api.add_resource(StationResource, '/api/stations/<int:station_id>')
 
 @app.route('/')
 def index():
@@ -281,8 +279,11 @@ class StaffResource(Resource):
         return "", 204
 
 
-api.add_resource(PumpResource, "/api/pumps", "/api/pumps/<int:id>")
-api.add_resource(StaffResource, "/api/staff", "/api/staff/<int:id>")
+# Akumu's original endpoints (without /api prefix)
+api.add_resource(StationsResource, "/stations")
+api.add_resource(StationResource, "/stations/<int:id>")
+api.add_resource(PumpResource, "/pumps", "/pumps/<int:id>")
+api.add_resource(StaffResource, "/staff", "/staff/<int:id>")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
