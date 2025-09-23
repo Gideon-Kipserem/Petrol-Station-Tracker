@@ -94,7 +94,8 @@ export default function PumpManager({ stationId, pumps: initialPumps }) {
       <div className="mt-4 flex space-x-2 items-center">
         <input
           type="text"
-          placeholder="Pump Number"
+          // placeholders in italic?
+          placeholder="Pump Number e.g Pump 5" 
           value={newPumpNumber}
           onChange={(e) => setNewPumpNumber(e.target.value)}
           className="border px-2 py-1 rounded"
