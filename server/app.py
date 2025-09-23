@@ -33,3 +33,18 @@ def create_sale():
     db.session.add(sale)
     db.session.commit()
     return jsonify(sale.to_dict()), 201 
+
+# Update a sale
+@app.route("/sales/<int:id>", methods=["PATCH"])
+def update_sale(id):
+    sale = Sale.query.get_or_404(id)
+    data = request.json
+
+    sale.fuel_type = data.get("fuelType", sale.fuel_type)
+    sale.litres = data.get("litres", sale.litres)
+    sale.price_per_litre = data.get("pricePerLitre", sale.price_per_litre)
+    sale.total_amount = sale.litres * sale.price_per_litre
+    sale.pump_id = data.get("pumpId", sale.pump_id)
+
+    db.session.commit()
+    return jsonify(sale.to_dict())
