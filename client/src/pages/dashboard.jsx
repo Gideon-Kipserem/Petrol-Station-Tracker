@@ -1,6 +1,9 @@
+// Gideon — Dashboard mocks
+// Using mock data for now. Replace useEffect with GET /api/dashboard?range=today|7d|30d|90d
+// Expect keys: totals, recentSales, fuelTypeData, salesTrends, topStations, lowStockAlerts
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Fuel, Users, MapPin, DollarSign, BarChart3, Clock, AlertTriangle } from 'lucide-react';
+import { TrendingUp, Fuel, Users, MapPin,  BarChart3, Clock, AlertTriangle } from 'lucide-react';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -19,7 +22,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('7d'); // 7d, 30d, 90d
 
-  // Simulated data - replace with actual API calls
+  // Mock data: swap this for fetch('/api/dashboard') as above
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -164,9 +167,8 @@ const Dashboard = () => {
                   +12.5% from last period
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl shadow-lg">
-                <DollarSign className="w-6 h-6 text-white" />
-              </div>
+
+
             </div>
           </div>
 
