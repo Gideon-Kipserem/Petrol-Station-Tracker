@@ -71,3 +71,6 @@ def create_pump():
     db.session.add(pump)
     db.session.commit()
     return jsonify(pump.to_dict()), 201
+
+if __name__ == "__main__":
+    app.run(debug=True)
