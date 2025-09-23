@@ -1,63 +1,40 @@
 "use client";
-import { useEffect, useState } from "react";
-import { getAllStations, updateStation } from "../Lib/api";
-import { getStationById } from "../Lib/api";
-import { addStation, deleteStation } from "../Lib/api";
 
-export default async function StationsPage() {
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { getAllStations } from "@/app/Lib/api";
+
+export default function StationsPage() {
   const [stations, setStations] = useState([]);
-  const [name, setName] = useState("");
-  const [location, setLocation] = useState("");
 
-  // Load stations
   useEffect(() => {
-    getAllStations().then(setStations).catch(console.error);
+    async function fetchStations() {
+      const data = await getAllStations();
+      setStations(data);
+    }
+    fetchStations();
   }, []);
 
-  // Add station
-  async function handleAdd(e) {
-    e.preventDefault();
-    const newStation = await addStation({ name, location });
-    setStations([...stations, newStation]);
-    setName("");
-    setLocation("");
-  }
-
-  // Update
-  async function handleUpdate(id) {
-    const updated = await updateStation(id, { name: "New Name" });
-    const newStations = stations.map((station) => {
-      if (station.id == id) {
-        return updateStation;
-      } else {
-        return station;
-      }
-    });
-    setStations(newStations);
-  }
-
   return (
-    <div>
-      <h1>STATIONS</h1>
-      <form onSubmit={handleAdd}>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Station name"
-        ></input>
-        <input
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Location"
-        ></input>
-      </form>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4">All Petrol Stations</h1>
 
-      <ul>
-        {Stations.map((station) => (
-          <li key={station.id}>
-            {station.name} - {station.location}{" "}
-            <button onClick={() => handleUpdate(station.id)}>Edit</button>
-            <button onClick={() => handleUpdate(station.id)}>Delete</button>
+      <ul className="space-y-2">
+        {stations.map((station) => (
+          <li
+            key={station.id}
+            className="border p-2 flex justify-between items-center rounded"
+          >
+            <span>
+              {station.name} — {station.location}
+            </span>
+            {/* Link to the station detail page */}
+            <Link
+              href={`/stations/${station.id}`}
+              className="bg-blue-500 text-white px-3 py-1 rounded"
+            >
+              Open
+            </Link>
           </li>
         ))}
       </ul>
