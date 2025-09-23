@@ -13,4 +13,8 @@ migrate = Migrate(app, db)
 def home():
     return jsonify({"message": "Petrol Station Tracker API is running"})
 
-    
+# Getting all sales
+@app.route("/sales", methods=["GET"])
+def get_sales():
+    sales = Sale.query.all()
+    return jsonify([sale.to_dict() for sale in sales])    
