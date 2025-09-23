@@ -9,7 +9,7 @@ from faker import Faker
 
 # Local imports
 from app import app
-from models import db, Station, FuelType, Staff, Sale, FuelInventory
+from models import db, Station, FuelType, Staff, Sale, FuelInventory, Pump
 
 if __name__ == '__main__':
     fake = Faker()
@@ -113,3 +113,26 @@ if __name__ == '__main__':
         print(f"Created {Staff.query.count()} staff members")
         print(f"Created {FuelInventory.query.count()} inventory records")
         print(f"Created {Sale.query.count()} sales records")
+            for i in range(randint(2, 4)):  # 2–4 pumps per station
+                pump = Pump(
+                    pump_number=f"Pump {i+1}",
+                    fuel_type=rc(["Petrol", "Diesel", "Kerosene"]),
+                    station_id=station.id
+                )
+                db.session.add(pump)
+                pumps.append(pump)
+        db.session.commit()
+
+        # --- Seed Staff ---
+        roles = ["attendant", "manager", "cashier"]
+        for station in stations:
+            for _ in range(randint(2, 3)):  # 2–3 staff per station
+                staff = Staff(
+                    name=fake.name(),
+                    role=rc(roles),
+                    station_id=station.id
+                )
+                db.session.add(staff)
+        db.session.commit()
+
+        print("Seeding completed!")
