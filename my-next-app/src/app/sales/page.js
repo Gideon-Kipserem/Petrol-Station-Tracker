@@ -1,13 +1,56 @@
-'use client';
+"use client";
+import React, { useEffect, useState } from "react";
+import SaleForm from "../../components/SaleForm";
+
 
 export default function SalesPage() {
-  // Mock data for demonstration
-  const transactions = [
-    { id: 1, litres: 45.5, fuelType: "Regular", pump: "Pump 1", pricePerLitre: 1.45, total: 65.98, date: "9/19/2025, 7:26 PM" },
-    { id: 2, litres: 30.0, fuelType: "Premium", pump: "Pump 2", pricePerLitre: 1.65, total: 49.50, date: "9/19/2025, 7:26 PM" },
-    { id: 3, litres: 60.2, fuelType: "Diesel", pump: "Pump 1", pricePerLitre: 1.55, total: 93.31, date: "9/19/2025, 7:26 PM" },
-    { id: 4, litres: 25.8, fuelType: "Regular", pump: "Pump 2", pricePerLitre: 1.45, total: 37.41, date: "9/19/2025, 7:26 PM" },
-  ];
+  const [sales, setSales] = useState([]);
+  const [pumps, setPumps] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [showForm, setShowForm] = useState(false);
+  const [editingSale, setEditingSale] = useState(null);
+
+  // Fetch sales & pumps from API
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [salesRes, pumpsRes] = await Promise.all([
+          fetch("http://127.0.0.1:5000/sales"),
+          fetch("http://127.0.0.1:5000/pumps"),
+        ]);
+
+        if (!salesRes.ok || !pumpsRes.ok) throw new Error("Fetch failed");
+
+        const salesData = await salesRes.json();
+        const pumpsData = await pumpsRes.json();
+
+        setSales(salesData);
+        setPumps(pumpsData);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Delete sale with confirmation
+  async function handleDelete(id) {
+    const confirmed = window.confirm("Are you sure you want to delete this sale?");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`http://127.0.0.1:5000/sales/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete");
+      setSales(sales.filter((s) => s.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  if (loading) return <p className="text-gray-400">Loading...</p>;
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
@@ -16,94 +59,106 @@ export default function SalesPage() {
         <h1 className="text-3xl font-bold mb-2">Petrol Station Tracker</h1>
         <p className="text-gray-400">Manage fuel sales and transactions</p>
       </div>
+      <div className="mb-4">
+        <h2 className="text-2xl font-semibold mb-1">Sales Management</h2>
+        <p className="text-gray-400">Manage fuel sales and transactions</p>
+      </div>
 
-    <div className="mb-6">
-    <h2 className="text-2xl font-semibold mb-1">Sales Management</h2>
-    <p className="text-gray-400">Manage fuel sales records, view history and totals</p>
-    </div>
-
-
-
-      {/* Add Sale Buttons */}
+      {/* Add Sale Button */}
       <div className="flex justify-end gap-4 mb-6">
-        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">
+        <button
+          onClick={() => {
+            setEditingSale(null);
+            setShowForm(true);
+          }}
+          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors"
+        >
           Add Sale
         </button>
       </div>
+      
 
-    <div className="mb-4">
-    <h2 className="text-2xl font-semibold mb-1">Sales History</h2>
-    <p className="text-gray-400">All fuel sales transactions recorded in the system</p>
-    </div>
+      {/* Sale Form */}
+      {showForm && (
+        <SaleForm
+          setSales={setSales}
+          pumps={pumps}
+          editingSale={editingSale}
+          setEditingSale={setEditingSale}
+          setShowForm={setShowForm}
+        />
+      )}
+
+      {/* Sales History */}
+      <div className="mb-4">
+        <h2 className="text-2xl font-semibold mb-1">Sales History</h2>
+        <p className="text-gray-400">All fuel sales transactions recorded in the system</p>
+      </div>
 
       <div className="sales-history space-y-4">
-  {[
-    { volume: 45.5, fuelType: "Regular", pump: 1, price: 1.45, date: "9/19/2025, 7:26:48 PM", total: 65.98 },
-    { volume: 30.0, fuelType: "Premium", pump: 2, price: 1.65, date: "9/19/2025, 7:26:48 PM", total: 49.50 },
-    { volume: 60.2, fuelType: "Diesel", pump: 1, price: 1.55, date: "9/19/2025, 7:26:48 PM", total: 93.31 },
-    { volume: 25.8, fuelType: "Regular", pump: 2, price: 1.45, date: "9/19/2025, 7:26:48 PM", total: 37.41 },
-  ].map((sale, index) => {
-    let fuelColor = "";
-    switch (sale.fuelType) {
-      case "Regular":
-        fuelColor = "bg-green-600";
-        break;
-      case "Premium":
-        fuelColor = "bg-yellow-500";
-        break;
-      case "Diesel":
-        fuelColor = "bg-blue-600";
-        break;
-      default:
-        fuelColor = "bg-gray-600";
-    }
+        {sales.map((sale) => {
+          let fuelColor = "";
+          switch (sale.fuel_type) {
+            case "Regular":
+              fuelColor = "bg-green-600";
+              break;
+            case "Premium":
+              fuelColor = "bg-yellow-500";
+              break;
+            case "Diesel":
+              fuelColor = "bg-blue-600";
+              break;
+            default:
+              fuelColor = "bg-gray-600";
+          }
 
-    return (
-      <div
-        key={index}
-        className="transaction flex justify-between items-center p-4 rounded-lg"
-        style={{ backgroundColor: "#111", color: "white" }}
-      >
-        <div className="transaction-content space-y-1">
-          <div className="transaction-line flex items-center gap-2">
-            <span className="volume font-semibold">{sale.volume}L</span>
-            <span className={`fuel-type px-2 py-1 rounded text-white ${fuelColor}`}>
-              {sale.fuelType}
-            </span>
-            <span className="divider">•</span>
-            <span className="pump-info">Pump {sale.pump}</span>
-          </div>
-          <div className="transaction-line flex items-center gap-2 text-sm text-gray-300">
-            <span className="price-info">${sale.price}/L</span>
-            <span className="divider">•</span>
-            <span className="date-info">{sale.date}</span>
-          </div>
-        </div>
+          return (
+            <div
+              key={sale.id}
+              className="transaction flex justify-between items-center p-4 rounded-lg"
+              style={{ backgroundColor: "#111", color: "white" }}
+            >
+              <div className="transaction-content space-y-1">
+                <div className="transaction-line flex items-center gap-2">
+                  <span className="volume font-semibold">{sale.litres}L</span>
+                  <span className={`fuel-type px-2 py-1 rounded text-white ${fuelColor}`}>
+                    {sale.fuel_type}
+                  </span>
+                  <span className="divider">•</span>
+                  <span className="pump-info">Pump {sale.pump?.pump_number}</span>
+                </div>
+                <div className="transaction-line flex items-center gap-2 text-sm text-gray-300">
+                  <span className="price-info">${sale.price_per_litre}/L</span>
+                  <span className="divider">•</span>
+                  <span className="date-info">{new Date(sale.sale_timestamp).toLocaleString()}</span>
+                  <span className="divider">•</span>
+                  <span className="contribution">Contribution: {sale.contribution || 0}</span>
+                </div>
+              </div>
 
-        <div className="transaction-actions flex flex-col items-end gap-2">
-          <div className="transaction-amount font-bold">${sale.total.toFixed(2)}</div>
-          <div className="action-icons flex gap-2">
-            <button className="icon-btn edit-icon px-2 py-1 rounded bg-gray-700 hover:bg-gray-600">Edit</button>
-            <button className="icon-btn delete-icon px-2 py-1 rounded bg-red-600 hover:bg-red-500">Delete</button>
-          </div>
-        </div>
-      </div>
-    );
-  })}
-</div>
-
-
-      {/* Sales Amount Boxes */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Sales Amounts</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {transactions.map((tx) => (
-            <div key={tx.id} className="bg-gray-700 p-4 rounded-lg shadow text-center">
-              <div className="text-gray-300 text-sm mb-1">{tx.fuelType}</div>
-              <div className="font-bold text-white text-lg">${tx.total.toFixed(2)}</div>
+              <div className="transaction-actions flex flex-col items-end gap-2">
+                <div className="transaction-amount font-bold">${sale.total_amount.toFixed(2)}</div>
+                <div className="action-icons flex gap-2">
+                  <button
+                    onClick={() => {
+                      setEditingSale(sale);
+                      setShowForm(true);
+                    }}
+                    className="icon-btn edit-icon px-2 py-1 rounded bg-gray-700 hover:bg-gray-600"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(sale.id)}
+                    className="icon-btn delete-icon px-2 py-1 rounded bg-red-600 hover:bg-red-500"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </div>
   );
