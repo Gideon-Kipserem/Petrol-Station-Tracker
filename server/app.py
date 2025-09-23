@@ -1,23 +1,23 @@
-#!/usr/bin/env python3
+from flask import Flask, request, jsonify
+from config import db, Config
+from models import Pump, Sale
+from flask_cors import CORS
 
-# Standard library imports
+app = Flask(__name__)
+app.config.from_object(Config)
+CORS(app)
 
-# Remote library imports
-from flask import request
-from flask_restful import Resource
-
-# Local imports
-from config import app, db, api
-# Add your model imports
-
-
-# Views go here!
+db.init_app(app)
 
 @app.route('/')
-def index():
-    return '<h1>Project Server</h1>'
+def home():
+    return {'message': 'Petrol Station Tracker API - Sales Focus'}
 
-
-if __name__ == '__main__':
-    app.run(port=5555, debug=True)
-
+@app.route('/sales', methods=['GET', 'POST'])
+def handle_sales():
+    if request.method == 'GET':
+        try:
+            sales = Sale.query.order_by(Sale.timestamp.desc()).all()
+            return jsonify([sale.to_dict() for sale in sales]), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
