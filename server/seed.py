@@ -1,52 +1,20 @@
-from app import app
-from models import db, Pump, Sale
-from datetime import datetime, timedelta
+from app import app, db
+from models import Pump, Sale
 
-def seed_data():
-    with app.app_context():
-        # Clearing and creating tables
-        db.drop_all()
-        db.create_all()
+with app.app_context():
+    db.drop_all()
+    db.create_all()
 
-        # Creating pumps
-        pumps = [
-            Pump(pump_number="01", fuel_type="Petrol"),
-            Pump(pump_number="02", fuel_type="Diesel"),
-            Pump(pump_number="03", fuel_type="Kerosene"),
-        ]
+    pump1 = Pump(pump_number="01")
+    pump2 = Pump(pump_number="02")
+    db.session.add_all([pump1, pump2])
+    db.session.commit()
 
-        # Creating sales
-        sales = [
-            Sale(
-                fuel_type="Petrol",
-                litres=10.5,
-                price_per_litre=120.0,
-                total_amount=1260.0,
-                pump_id=1,
-                timestamp=datetime.utcnow() - timedelta(hours=2)
-            ),
-            Sale(
-                fuel_type="Diesel",
-                litres=15.2,
-                price_per_litre=110.0,
-                total_amount=1672.0,
-                pump_id=2,
-                timestamp=datetime.utcnow() - timedelta(hours=1)
-            ),
-            Sale(
-                fuel_type="Kerosene",
-                litres=8.0,
-                price_per_litre=100.0,
-                total_amount=800.0,
-                pump_id=3,
-                timestamp=datetime.utcnow()
-            )
-        ]
+    sale1 = Sale(fuel_type="Regular", litres=45.5, price_per_litre=1.45, total_amount=65.98, pump_id=pump1.id)
+    sale2 = Sale(fuel_type="Premium", litres=30.0, price_per_litre=1.65, total_amount=49.50, pump_id=pump2.id)
+    sale3 = Sale(fuel_type="Diesel", litres=60.2, price_per_litre=1.55, total_amount=93.31, pump_id=pump1.id)
 
-        db.session.add_all(pumps + sales)
-        db.session.commit()
-        print("✅ Sales data seeded successfully!")
-        print(f" Created {len(pumps)} pumps and {len(sales)} sales")
+    db.session.add_all([sale1, sale2, sale3])
+    db.session.commit()
 
-if __name__ == '__main__':
-    seed_data()
+    print("Database seeded successfully")
