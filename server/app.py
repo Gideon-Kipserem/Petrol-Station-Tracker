@@ -57,3 +57,9 @@ def delete_sale(id):
     db.session.commit()
     return jsonify({"message": "Sale deleted successfully"})
 
+# Get all pumps
+@app.route("/pumps", methods=["GET"])
+def get_pumps():
+    pumps = Pump.query.all()
+    return jsonify([pump.to_dict() for pump in pumps])
+
