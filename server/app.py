@@ -48,3 +48,12 @@ def update_sale(id):
 
     db.session.commit()
     return jsonify(sale.to_dict())
+
+# Delete a sale
+@app.route("/sales/<int:id>", methods=["DELETE"])
+def delete_sale(id):
+    sale = Sale.query.get_or_404(id)
+    db.session.delete(sale)
+    db.session.commit()
+    return jsonify({"message": "Sale deleted successfully"})
+
