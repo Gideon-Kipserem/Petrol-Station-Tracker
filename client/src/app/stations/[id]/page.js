@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { getStationById, updateStation, deleteStation } from "@/app/Lib/api";
+import { getStationById } from "../../Lib/api.js";
 import PumpManager from "./PumpManager";
 import StaffManager from "./StaffManager";
 

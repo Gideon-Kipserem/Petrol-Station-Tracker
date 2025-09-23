@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getAllStations, addStation } from "@/app/Lib/api";
+import { getAllStations, addStation } from "../Lib/api.js";
 
 export default function StationsPage() {
   const [stations, setStations] = useState([]);

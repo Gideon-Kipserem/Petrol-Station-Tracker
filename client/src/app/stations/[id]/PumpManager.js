@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getStationById, addPump, updatePump, deletePump } from "@/app/Lib/api";
+import { getStationById, addPump, updatePump, deletePump } from "../../Lib/api.js";
 
 export default function PumpManager({ stationId, pumps: initialPumps }) {
   const [station, setStation] = useState(null);

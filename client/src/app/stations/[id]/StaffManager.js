@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { addStaff, updateStaff, deleteStaff } from "@/app/Lib/api";
+import { addStaff, updateStaff, deleteStaff } from "../../Lib/api.js";
 
 export default function StaffManager({ stationId, initialStaff }) {
   const [staffList, setStaffList] = useState(initialStaff || []);
