@@ -1,8 +1,16 @@
-export async function getStationById(id) {
-    const res = await fetch('http://127.0.0.1:5555/stations/${id}', {
-        cache: "no-store",
+const BASE_URL = "http://127.0.0.1:5555/stations";
 
-    });
-    if(!res.ok) throw new Error ("Failed to fetch station");
-    return res.json();
+export async function getStationById(id) {
+  const res = await fetch(`${BASE_URL}/${id}`, {cache: "no-store"});
+  if (!res.ok) throw new Error("Failed to fetch station");
+  return await res.json();
 }
+
+export async function getAllStations() {
+    const res = await fetch(BASE_URL, {
+        cache: "no-store" });
+    if (!res.ok) throw new Error ("Failed to fetch Stations");
+    return await res.json();
+}
+
+// Add station
