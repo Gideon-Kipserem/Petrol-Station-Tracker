@@ -41,15 +41,15 @@ class Pump(db.Model):
 
 class Sale(db.Model):
     __tablename__ = "sales"
-
     id = db.Column(db.Integer, primary_key=True)
     fuel_type = db.Column(db.String(50), nullable=False)
     litres = db.Column(db.Float, nullable=False)
     price_per_litre = db.Column(db.Float, nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
     sale_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
     pump_id = db.Column(db.Integer, db.ForeignKey("pumps.id"), nullable=False)
+
+    users = db.relationship("User", secondary="user_sales", back_populates="sales")
 
     def to_dict(self):
         return {
