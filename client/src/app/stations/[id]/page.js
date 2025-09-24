@@ -61,7 +61,7 @@ export default function StationDetail() {
         onClick={() => router.push("/stations")}
         className="bg-gray-300 px-3 py-1 rounded mb-4"
       >
-        ← Back to Stations
+        Back to Stations
       </button>
 
       <h1 className="text-3xl font-bold">{station.name}</h1>
