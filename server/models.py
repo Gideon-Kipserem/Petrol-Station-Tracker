@@ -7,7 +7,7 @@ class UserSale(db.Model):
     __tablename__ = 'user_sales'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), primary_key=True)
-    contribution = db.Column(db.Integer)  # example user-submitted attribute
+    # contribution = db.Column(db.Integer)  # example user-submitted attribute
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
