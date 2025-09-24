@@ -9,9 +9,8 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
         litres: editingSale.litres,
         pricePerLitre: editingSale.price_per_litre,
         pumpId: editingSale.pump_id,
-        contribution: editingSale.contribution || 0,
       }
-    : { fuelType: "", litres: "", pricePerLitre: "", pumpId: "", contribution: 0 };
+    : { fuelType: "", litres: "", pricePerLitre: "", pumpId: "" };
 
   const validationSchema = Yup.object({
     fuelType: Yup.string()
@@ -29,9 +28,6 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
       )
       .required("Price per litre is required"),
     pumpId: Yup.string().required("Select a pump"),
-    contribution: Yup.number()
-      .min(0, "Contribution cannot be negative")
-      .required("Contribution is required"),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -41,7 +37,6 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
       pricePerLitre: Number(values.pricePerLitre),
       totalAmount: Number(values.litres) * Number(values.pricePerLitre),
       pumpId: values.pumpId,
-      contribution: Number(values.contribution),
       userId: "user-1", // example user
     };
 
@@ -72,70 +67,119 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
-  <div className="bg-gray-900 p-6 rounded w-full max-w-md text-white">
-    <div className="flex justify-between mb-4">
-      <h3>{editingSale ? "Edit Sale" : "Add Sale"}</h3>
-      <button
-        onClick={() => { setEditingSale(null); setShowForm(false); }}
-        className="text-white hover:text-red-500"
-      >
-        ×
-      </button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center p-6 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">
+            {editingSale ? "Edit Sale" : "Add New Sale"}
+          </h3>
+          <button
+            onClick={() => { setEditingSale(null); setShowForm(false); }}
+            className="text-gray-400 hover:text-gray-600 text-xl font-bold"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Form Content */}
+        <div className="p-6">
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+            enableReinitialize
+          >
+            {() => (
+              <Form className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Fuel Type
+                  </label>
+                  <Field 
+                    as="select" 
+                    name="fuelType" 
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Select fuel type</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Premium">Premium</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Kerosene">Kerosene</option>
+                  </Field>
+                  <ErrorMessage name="fuelType" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Litres
+                  </label>
+                  <Field 
+                    type="number" 
+                    name="litres" 
+                    step="0.1"
+                    placeholder="Enter litres"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <ErrorMessage name="litres" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Price per Litre (ksh)
+                  </label>
+                  <Field 
+                    type="number" 
+                    name="pricePerLitre" 
+                    step="0.01"
+                    placeholder="Enter price per litre"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <ErrorMessage name="pricePerLitre" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Pump
+                  </label>
+                  <Field 
+                    as="select" 
+                    name="pumpId" 
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Select a pump</option>
+                    {pumps.map((pump) => (
+                      <option key={pump.id} value={pump.id}>
+                        {pump.pump_number} - {pump.station?.name || `Station ${pump.station_id}`}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage name="pumpId" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                  <button 
+                    type="button" 
+                    onClick={() => { setEditingSale(null); setShowForm(false); }}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {editingSale ? "Update Sale" : "Add Sale"}
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </div>
     </div>
-
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-      enableReinitialize
-    >
-      {() => (
-        <Form className="space-y-3">
-          <div>
-            <label>Fuel Type</label>
-            <Field name="fuelType" className="w-full border border-gray-700 bg-gray-800 p-2 rounded text-white" />
-            <ErrorMessage name="fuelType" component="div" className="text-red-500 text-sm" />
-          </div>
-
-          <div>
-            <label>Litres</label>
-            <Field type="number" name="litres" className="w-full border border-gray-700 bg-gray-800 p-2 rounded text-white" />
-            <ErrorMessage name="litres" component="div" className="text-red-500 text-sm" />
-          </div>
-
-          <div>
-            <label>Price per Litre</label>
-            <Field type="number" name="pricePerLitre" className="w-full border border-gray-700 bg-gray-800 p-2 rounded text-white" />
-            <ErrorMessage name="pricePerLitre" component="div" className="text-red-500 text-sm" />
-          </div>
-
-          <div>
-            <label>Pump</label>
-            <Field as="select" name="pumpId" className="w-full border border-gray-700 bg-gray-800 p-2 rounded text-white">
-              <option value="">Select a pump</option>
-              {pumps.map((pump) => (
-                <option key={pump.id} value={pump.id}>
-                  Pump #{pump.pump_number}
-                </option>
-              ))}
-            </Field>
-            <ErrorMessage name="pumpId" component="div" className="text-red-500 text-sm" />
-          </div>
-
-          <div className="flex justify-between mt-4">
-            <button type="submit" className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white">
-              {editingSale ? "Update" : "Add"}
-            </button>
-            <button type="button" onClick={() => { setEditingSale(null); setShowForm(false); }} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white">
-              Cancel
-            </button>
-          </div>
-        </Form>
-      )}
-    </Formik>
-  </div>
-</div>
 
   );
 };

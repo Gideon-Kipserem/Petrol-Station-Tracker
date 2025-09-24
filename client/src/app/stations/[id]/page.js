@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getStationById, updateStation, deleteStation } from "@/app/Lib/api";
+import { getStationById, updateStation, deleteStation } from "../../Lib/api";
 import PumpManager from "./PumpManager";
 import StaffManager from "./StaffManager";
 
@@ -184,6 +184,14 @@ export default function StationDetail() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
+      {/* Back button */}
+      <button
+        onClick={() => router.push("/stations")}
+        className="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded mb-4 transition-colors"
+      >
+        Back to All Stations
+      </button>
+
       {/* Header with station info and actions */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <div className="flex justify-between items-start mb-4">

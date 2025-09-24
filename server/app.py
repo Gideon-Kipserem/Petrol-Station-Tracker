@@ -169,13 +169,43 @@ def update_sale(id):
     db.session.commit()
     return jsonify(sale.to_dict())
 
-# Delete a sale
 @app.route("/sales/<int:id>", methods=["DELETE"])
 def delete_sale(id):
     sale = Sale.query.get_or_404(id)
     db.session.delete(sale)
     db.session.commit()
-    return jsonify({"message": "Sale deleted successfully"})
+    return jsonify({"message": "Sale deleted successfully"}), 204
+
+# Get sales statistics by station
+@app.route("/sales/by-station", methods=["GET"])
+def get_sales_by_station():
+    from sqlalchemy import func
+    
+    # Query to get sales grouped by station
+    results = db.session.query(
+        Station.id,
+        Station.name,
+        Station.location,
+        func.count(Sale.id).label('sales_count'),
+        func.sum(Sale.total_amount).label('total_revenue'),
+        func.sum(Sale.litres).label('total_litres')
+    ).join(Pump, Station.id == Pump.station_id)\
+     .join(Sale, Pump.id == Sale.pump_id)\
+     .group_by(Station.id, Station.name, Station.location)\
+     .all()
+    
+    station_stats = []
+    for result in results:
+        station_stats.append({
+            'station_id': result.id,
+            'station_name': result.name,
+            'station_location': result.location,
+            'sales_count': result.sales_count,
+            'total_revenue': float(result.total_revenue or 0),
+            'total_litres': float(result.total_litres or 0)
+        })
+    
+    return jsonify(station_stats), 200
 
 # Get all pumps
 @app.route("/pumps", methods=["GET"])
@@ -275,10 +305,37 @@ def update_station(id):
 
 @app.route("/stations/<int:id>", methods=["DELETE"])
 def delete_station(id):
-    station = Station.query.get_or_404(id)
-    db.session.delete(station)
-    db.session.commit()
-    return jsonify({"message": "Station deleted successfully"}), 200
+    try:
+        station = Station.query.get_or_404(id)
+        
+        # Log what will be deleted
+        pumps_count = len(station.pumps)
+        staff_count = len(station.staff)
+        
+        # Count sales that will be deleted
+        sales_count = 0
+        for pump in station.pumps:
+            sales_count += len(pump.sales)
+        
+        print(f"Deleting station '{station.name}' with {pumps_count} pumps, {staff_count} staff, and {sales_count} sales")
+        
+        # Delete the station (cascade will handle pumps, staff, and sales)
+        db.session.delete(station)
+        db.session.commit()
+        
+        return jsonify({
+            "message": f"Station '{station.name}' deleted successfully",
+            "deleted": {
+                "pumps": pumps_count,
+                "staff": staff_count, 
+                "sales": sales_count
+            }
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting station: {str(e)}")
+        return jsonify({"error": f"Failed to delete station: {str(e)}"}), 500
 
 
 # STAFF API ENDPOINTS

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, Fuel, MapPin, Users, Settings, Menu, X, Search, User, Bell } from 'lucide-react';
+import { BarChart3, Fuel, MapPin, Users, Menu, X, Search, User, Bell } from 'lucide-react';
 
 const Navigation = ({ children }) => {
   const pathname = usePathname();
@@ -47,8 +47,7 @@ const Navigation = ({ children }) => {
   const navigation = [
     { name: 'Dashboard', href: '/', icon: BarChart3, current: pathname === '/' },
     { name: 'Stations', href: '/stations', icon: MapPin, current: pathname === '/stations' },
-    { name: 'Sales', href: '/sales', icon: Fuel, current: pathname === '/sales' },
-    { name: 'Settings', href: '/settings', icon: Settings, current: pathname === '/settings' }
+    { name: 'Sales', href: '/sales', icon: Fuel, current: pathname === '/sales' }
   ];
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -80,7 +79,7 @@ const Navigation = ({ children }) => {
         <div className="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-blue-600 to-blue-700">
           <div className="flex items-center">
             <Fuel className="h-8 w-8 text-white" />
-            <span className="ml-2 text-lg font-bold text-white">Petrol Tracker</span>
+            <span className="ml-2 text-lg font-bold text-white">Smart Petro</span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}

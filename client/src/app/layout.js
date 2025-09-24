@@ -2,7 +2,7 @@ import "./globals.css";
 import Navigation from "../components/Navigation";
 
 export const metadata = {
-  title: "Petrol Station Tracker",
+  title: "Smart Petro",
   description: "Real-time insights into your fuel business operations",
 };
 

@@ -4,7 +4,6 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { Fuel, Users, MapPin, BarChart3, Clock, AlertTriangle } from 'lucide-react';
-import Navigation from '../../components/Navigation';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -84,10 +83,7 @@ const Dashboard = () => {
   }, [timeRange]);
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-KE', {
-      style: 'currency',
-      currency: 'KES'
-    }).format(amount);
+    return `ksh${amount.toFixed(2)}`;
   };
 
   const formatNumber = (num) => {
@@ -119,7 +115,6 @@ const Dashboard = () => {
   }
 
   return (
-    <Navigation>
       <div className="p-6">
         <div className="max-w-7xl mx-auto animate-fade-in">
         {/* Header */}
@@ -377,7 +372,6 @@ const Dashboard = () => {
         </div>
         </div>
       </div>
-    </Navigation>
   );
 };
 

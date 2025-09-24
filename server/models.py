@@ -13,7 +13,7 @@ class UserSale(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
-     return {"user_id": self.user_id, "sale_id": self.sale_id, "contribution": self.contribution}
+        return {"user_id": self.user_id, "sale_id": self.sale_id, "created_at": self.created_at.isoformat() if self.created_at else None}
 
 
 class User(db.Model):
@@ -84,20 +84,46 @@ class Pump(db.Model, SerializerMixin):
     __tablename__ = "pumps"
 
     id = db.Column(db.Integer, primary_key=True)
-    pump_number = db.Column(db.String(10), nullable=False)
+    pump_number = db.Column(db.String(50), nullable=False)
     fuel_type = db.Column(db.String(50), nullable=False, default='Regular')
     station_id = db.Column(db.Integer, db.ForeignKey("stations.id"))
 
     station = db.relationship("Station", back_populates="pumps")
+    sales = db.relationship("Sale", back_populates="pump", cascade="all, delete-orphan")
 
-    serialize_rules = ('-station.pumps',)
+    serialize_rules = ('-station.pumps', '-sales.pump')
+
+    @validates('pump_number')
+    def validate_pump_number(self, key, value):
+        if not value or len(value.strip()) < 1:
+            raise ValueError("Pump number cannot be empty")
+        
+        value = value.strip()
+        
+        # Allow "Pump X" format (preferred)
+        if value.lower().startswith("pump"):
+            return value
+        
+        # Allow numeric formats like "0101", "1", "01", etc. for backward compatibility
+        if value.isdigit() or (len(value) >= 3 and all(c.isdigit() for c in value)):
+            return value
+            
+        # Reject invalid formats
+        raise ValueError("Pump number must be in format 'Pump X' or numeric format like '0101' or '1'")
+        
+        return value
 
     def to_dict(self):
         return {
             "id": self.id,
             "pump_number": self.pump_number,
             "fuel_type": self.fuel_type,
-            "station_id": self.station_id
+            "station_id": self.station_id,
+            "station": {
+                "id": self.station.id,
+                "name": self.station.name,
+                "location": self.station.location
+            } if self.station else None
         }
 
 
@@ -112,7 +138,7 @@ class Sale(db.Model):
     pump_id = db.Column(db.Integer, db.ForeignKey("pumps.id"), nullable=False)
 
     # Relationships
-    pump = db.relationship("Pump", backref="sales")
+    pump = db.relationship("Pump", back_populates="sales")
     users = db.relationship("User", secondary="user_sales", back_populates="sales")
 
     def to_dict(self):

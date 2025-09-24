@@ -50,33 +50,26 @@ export default function SalesPage() {
     }
   }
 
-  if (loading) return <p className="text-gray-400">Loading...</p>;
+  if (loading) return <p className="text-gray-600">Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">Petrol Station Tracker</h1>
-        <p className="text-gray-400">Manage fuel sales and transactions</p>
-      </div>
-      <div className="mb-4">
-        <h2 className="text-2xl font-semibold mb-1">Sales Management</h2>
-        <p className="text-gray-400">Manage fuel sales and transactions</p>
-      </div>
-
-      {/* Add Sale Button */}
-      <div className="flex justify-end gap-4 mb-6">
+    <div className="min-h-screen bg-white text-gray-900 p-6">
+      {/* Page Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Sales Management</h1>
+          <p className="text-gray-600 mt-1">Manage fuel sales and transactions</p>
+        </div>
         <button
           onClick={() => {
             setEditingSale(null);
             setShowForm(true);
           }}
-          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
         >
-          Add Sale
+          Add New Sale
         </button>
       </div>
-      
 
       {/* Sale Form */}
       {showForm && (
@@ -89,13 +82,41 @@ export default function SalesPage() {
         />
       )}
 
-      {/* Sales History */}
-      <div className="mb-4">
-        <h2 className="text-2xl font-semibold mb-1">Sales History</h2>
-        <p className="text-gray-400">All fuel sales transactions recorded in the system</p>
+      {/* Sales Summary by Station */}
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900">Sales by Station</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {(() => {
+            // Group sales by station
+            const salesByStation = sales.reduce((acc, sale) => {
+              const stationName = sale.pump?.station?.name || 'Unknown Station';
+              if (!acc[stationName]) {
+                acc[stationName] = { count: 0, total: 0, litres: 0 };
+              }
+              acc[stationName].count += 1;
+              acc[stationName].total += sale.total_amount;
+              acc[stationName].litres += sale.litres;
+              return acc;
+            }, {});
+
+            return Object.entries(salesByStation).map(([stationName, stats]) => (
+              <div key={stationName} className="bg-gray-100 border border-gray-200 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{stationName}</h3>
+                <div className="space-y-1 text-sm text-gray-700">
+                  <div>Sales: {stats.count}</div>
+                  <div>Total: ksh{stats.total.toFixed(2)}</div>
+                  <div>Litres: {stats.litres.toFixed(1)}L</div>
+                </div>
+              </div>
+            ));
+          })()}
+        </div>
       </div>
 
-      <div className="sales-history space-y-4">
+      {/* Sales History */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900">Sales History</h2>
+        <div className="sales-history space-y-4">
         {sales.map((sale) => {
           let fuelColor = "";
           switch (sale.fuel_type) {
@@ -115,42 +136,40 @@ export default function SalesPage() {
           return (
             <div
               key={sale.id}
-              className="transaction flex justify-between items-center p-4 rounded-lg"
-              style={{ backgroundColor: "#111", color: "white" }}
+              className="transaction flex justify-between items-center p-4 rounded-lg bg-gray-100 border border-gray-200 text-gray-900"
             >
               <div className="transaction-content space-y-1">
                 <div className="transaction-line flex items-center gap-2">
-                  <span className="volume font-semibold">{sale.litres}L</span>
+                  <span className="volume font-semibold text-gray-900">{sale.litres}L</span>
                   <span className={`fuel-type px-2 py-1 rounded text-white ${fuelColor}`}>
                     {sale.fuel_type}
                   </span>
-                  <span className="divider">•</span>
-                  <span className="pump-info">Pump {sale.pump?.pump_number}</span>
+                  <span className="divider text-gray-500">•</span>
+                  <span className="pump-info text-gray-900">{sale.pump?.pump_number} - {sale.pump?.station?.name || 'Unknown Station'}</span>
                 </div>
-                <div className="transaction-line flex items-center gap-2 text-sm text-gray-300">
-                  <span className="price-info">${sale.price_per_litre}/L</span>
-                  <span className="divider">•</span>
+                <div className="transaction-line flex items-center gap-2 text-sm text-gray-600">
+                  <span className="price-info">ksh{sale.price_per_litre}/L</span>
+                  <span className="divider text-gray-500">•</span>
                   <span className="date-info">{new Date(sale.sale_timestamp).toLocaleString()}</span>
-                  <span className="divider">•</span>
-                  <span className="contribution">Contribution: {sale.contribution || 0}</span>
+                  <span className="divider text-gray-500">•</span>
                 </div>
               </div>
 
               <div className="transaction-actions flex flex-col items-end gap-2">
-                <div className="transaction-amount font-bold">${sale.total_amount.toFixed(2)}</div>
+                <div className="transaction-amount font-bold text-gray-900">ksh{sale.total_amount.toFixed(2)}</div>
                 <div className="action-icons flex gap-2">
                   <button
                     onClick={() => {
                       setEditingSale(sale);
                       setShowForm(true);
                     }}
-                    className="icon-btn edit-icon px-2 py-1 rounded bg-gray-700 hover:bg-gray-600"
+                    className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(sale.id)}
-                    className="icon-btn delete-icon px-2 py-1 rounded bg-red-600 hover:bg-red-500"
+                    className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
                   >
                     Delete
                   </button>
@@ -159,6 +178,7 @@ export default function SalesPage() {
             </div>
           );
         })}
+        </div>
       </div>
     </div>
   );

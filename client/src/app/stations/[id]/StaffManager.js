@@ -8,7 +8,7 @@ import {
   addStaff,
   updateStaff,
   deleteStaff,
-} from "@/app/Lib/api";
+} from "../../Lib/api";
 
 export default function StaffManager({ stationId, initialStaff }) {
   const [staffList, setStaffList] = useState(initialStaff || []);
@@ -86,30 +86,46 @@ export default function StaffManager({ stationId, initialStaff }) {
         onSubmit={handleAddStaff}
       >
         {() => (
-          <Form className="mt-4 flex flex-col space-y-2">
-            <div className="flex space-x-2 items-center">
-              <Field
-                type="text"
-                name="name"
-                placeholder="Staff Name"
-                className="border px-2 py-1 rounded"
-              />
-              <Field
-                type="text"
-                name="role"
-                placeholder="Role"
-                className="border px-2 py-1 rounded"
-              />
-              <button
-                type="submit"
-                className="bg-green-500 text-white px-4 py-1 rounded"
-              >
-                Add Staff
-              </button>
-            </div>
-            <div className="text-red-500 text-sm">
-              <ErrorMessage name="name" />
-              <ErrorMessage name="role" />
+          <Form className="mt-4 bg-gray-50 p-4 rounded-lg border">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Staff Name
+                </label>
+                <Field
+                  type="text"
+                  name="name"
+                  placeholder="Enter staff name"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <Field
+                  as="select"
+                  name="role"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Select role</option>
+                  <option value="Manager">Manager</option>
+                  <option value="Attendant">Attendant</option>
+                  <option value="Cashier">Cashier</option>
+                  <option value="Supervisor">Supervisor</option>
+                  <option value="Mechanic">Mechanic</option>
+                </Field>
+                <ErrorMessage name="role" component="div" className="text-red-500 text-sm mt-1" />
+              </div>
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Add Staff
+                </button>
+              </div>
             </div>
           </Form>
         )}
@@ -169,16 +185,16 @@ export default function StaffManager({ stationId, initialStaff }) {
                   <span>
                     {member.name} — {member.role}
                   </span>
-                  <div className="space-x-2">
+                  <div className="flex space-x-2">
                     <button
                       onClick={() => setEditingId(member.id)}
-                      className="bg-yellow-400 px-2 py-1 rounded"
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteStaff(member.id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded"
+                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
                     >
                       Delete
                     </button>
