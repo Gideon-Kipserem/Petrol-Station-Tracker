@@ -12,6 +12,7 @@ import {
 
 export default function PumpManager({ stationId, initialPumps }) {
   const [pumps, setPumps] = useState(initialPumps || []);
+  const [editingPumpId, setEditingPumpId] = useState(null);
 
   // Fetch pumps fresh when the component mounts
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function PumpManager({ stationId, initialPumps }) {
     fetchPumps();
   }, [stationId]);
 
-  // Yup validation schema
+  // Yup validation 
   const pumpSchema = Yup.object().shape({
     pump_number: Yup.string()
       .required("Pump number is required")
@@ -46,10 +47,11 @@ export default function PumpManager({ stationId, initialPumps }) {
     }
   };
 
-  const handleUpdatePump = async (id) => {
+  const handleUpdatePump = async (id, values) => {
     try {
-      const updated = await updatePump(id, { pump_number: "Updated Pump" });
+      const updated = await updatePump(id, values);
       setPumps(pumps.map((p) => (p.id === id ? updated : p)));
+      setEditingPumpId(null);
     } catch (error) {
       console.error("Error updating pump:", error);
     }
@@ -75,23 +77,65 @@ export default function PumpManager({ stationId, initialPumps }) {
               key={pump.id}
               className="border rounded p-2 flex justify-between items-center"
             >
-              <span>
-                {pump.pump_number} — {pump.fuel_type}
-              </span>
-              <div className="space-x-2">
-                <button
-                  onClick={() => handleUpdatePump(pump.id)}
-                  className="bg-yellow-400 px-2 py-1 rounded"
+              {editingPumpId === pump.id ? (
+                // Inline Formik edit form
+                <Formik
+                  initialValues={{
+                    pump_number: pump.pump_number,
+                    fuel_type: pump.fuel_type,
+                  }}
+                  validationSchema={pumpSchema}
+                  onSubmit={(values) => handleUpdatePump(pump.id, values)}
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeletePump(pump.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
-                  Delete
-                </button>
-              </div>
+                  {() => (
+                    <Form className="flex space-x-2 items-center">
+                      <Field
+                        type="text"
+                        name="pump_number"
+                        className="border px-2 py-1 rounded"
+                      />
+                      <Field
+                        type="text"
+                        name="fuel_type"
+                        className="border px-2 py-1 rounded"
+                      />
+                      <button
+                        type="submit"
+                        className="bg-green-500 text-white px-2 py-1 rounded"
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingPumpId(null)}
+                        className="bg-gray-400 px-2 py-1 rounded"
+                      >
+                        Cancel
+                      </button>
+                    </Form>
+                  )}
+                </Formik>
+              ) : (
+                <>
+                  <span>
+                    {pump.pump_number} — {pump.fuel_type}
+                  </span>
+                  <div className="space-x-2">
+                    <button
+                      onClick={() => setEditingPumpId(pump.id)}
+                      className="bg-yellow-400 px-2 py-1 rounded"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeletePump(pump.id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </>
+              )}
             </li>
           ))}
         </ul>
