@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
-import { getStationById, updateStation, deleteStation } from "../../Lib/api.js";
+import { useParams, useRouter } from "next/navigation";
+import { getStationById, updateStation, deleteStation } from "@/app/Lib/api";
 import PumpManager from "./PumpManager";
 import StaffManager from "./StaffManager";
 
@@ -101,6 +100,7 @@ export default function StationDetail() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editData, setEditData] = useState({ name: "", location: "" });
 
   // Fetch station by ID
   useEffect(() => {
@@ -110,6 +110,7 @@ export default function StationDetail() {
       try {
         const data = await getStationById(stationId);
         setStation(data);
+        setEditData({ name: data.name, location: data.location }); // preload form
       } catch (error) {
         console.error("Failed to fetch station:", error);
         setError("Failed to load station details. Please try again later.");
@@ -121,10 +122,11 @@ export default function StationDetail() {
   }, [stationId]);
 
   // Update station info
-  const handleUpdateStation = async (updates) => {
+  const handleUpdateStation = async (formData) => {
     try {
-      const updated = await updateStation(stationId, updates);
+      const updated = await updateStation(stationId, formData);
       setStation(updated);
+      setEditData({ name: updated.name, location: updated.location });
       setIsEditModalOpen(false);
     } catch (error) {
       console.error("Failed to update station:", error);
@@ -233,7 +235,7 @@ export default function StationDetail() {
       <div className="mb-8">
         <h2 className="text-xl font-bold mb-4 text-gray-800">Pumps Management</h2>
         <div className="bg-white rounded-lg shadow p-6">
-          <PumpManager stationId={stationId} pumps={station.pumps} />
+          <PumpManager stationId={stationId} initialPumps={station.pumps} />
         </div>
       </div>
 
