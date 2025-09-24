@@ -128,16 +128,15 @@ export default function SalesPage() {
                   <span className="pump-info">Pump {sale.pump?.pump_number}</span>
                 </div>
                 <div className="transaction-line flex items-center gap-2 text-sm text-gray-300">
-                  <span className="price-info">${sale.price_per_litre}/L</span>
+                  <span className="price-info">ksh{sale.price_per_litre}/L</span>
                   <span className="divider">•</span>
                   <span className="date-info">{new Date(sale.sale_timestamp).toLocaleString()}</span>
                   <span className="divider">•</span>
-                  <span className="contribution">Contribution: {sale.contribution || 0}</span>
                 </div>
               </div>
 
               <div className="transaction-actions flex flex-col items-end gap-2">
-                <div className="transaction-amount font-bold">${sale.total_amount.toFixed(2)}</div>
+                <div className="transaction-amount font-bold">ksh{sale.total_amount.toFixed(2)}</div>
                 <div className="action-icons flex gap-2">
                   <button
                     onClick={() => {
