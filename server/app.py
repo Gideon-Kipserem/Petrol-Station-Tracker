@@ -93,12 +93,12 @@ def add_user_to_sale(sale_id):
     data = request.json
     sale = Sale.query.get_or_404(sale_id)
     user = User.query.get_or_404(data["user_id"])
-    contribution = data.get("contribution", 0)
+    # contribution = data.get("contribution", 0)
 
     # Check if already exists
     existing = UserSale.query.filter_by(user_id=user.id, sale_id=sale.id).first()
     if not existing:
-        association = UserSale(user_id=user.id, sale_id=sale.id, contribution=contribution)
+        association = UserSale(user_id=user.id, sale_id=sale.id)
         db.session.add(association)
         db.session.commit()
 
