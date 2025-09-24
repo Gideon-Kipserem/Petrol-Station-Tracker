@@ -27,7 +27,7 @@ export default function PumpManager({ stationId, initialPumps }) {
     fetchPumps();
   }, [stationId]);
 
-  // Yup validation 
+  // Yup validation
   const pumpSchema = Yup.object().shape({
     pump_number: Yup.string()
       .required("Pump number is required")
@@ -69,6 +69,42 @@ export default function PumpManager({ stationId, initialPumps }) {
   return (
     <div className="mt-6">
       <h2 className="text-xl font-semibold">Pumps</h2>
+
+      {/* Formik form for adding pumps */}
+      <Formik
+        initialValues={{ pump_number: "", fuel_type: "" }}
+        validationSchema={pumpSchema}
+        onSubmit={handleAddPump}
+      >
+        {() => (
+          <Form className="mt-4 flex flex-col space-y-2">
+            <div className="flex space-x-2 items-center">
+              <Field
+                type="text"
+                name="pump_number"
+                placeholder="Pump Number e.g Pump 5"
+                className="border px-2 py-1 rounded"
+              />
+              <Field
+                type="text"
+                name="fuel_type"
+                placeholder="Fuel Type"
+                className="border px-2 py-1 rounded"
+              />
+              <button
+                type="submit"
+                className="bg-green-500 text-white px-4 py-1 rounded"
+              >
+                Add Pump
+              </button>
+            </div>
+            <div className="text-red-500 text-sm">
+              <ErrorMessage name="pump_number" />
+              <ErrorMessage name="fuel_type" />
+            </div>
+          </Form>
+        )}
+      </Formik>
 
       {pumps.length > 0 ? (
         <ul className="mt-2 space-y-2">
@@ -142,42 +178,6 @@ export default function PumpManager({ stationId, initialPumps }) {
       ) : (
         <p className="text-gray-500">No pumps assigned yet</p>
       )}
-
-      {/* Formik form for adding pumps */}
-      <Formik
-        initialValues={{ pump_number: "", fuel_type: "" }}
-        validationSchema={pumpSchema}
-        onSubmit={handleAddPump}
-      >
-        {() => (
-          <Form className="mt-4 flex flex-col space-y-2">
-            <div className="flex space-x-2 items-center">
-              <Field
-                type="text"
-                name="pump_number"
-                placeholder="Pump Number e.g Pump 5"
-                className="border px-2 py-1 rounded"
-              />
-              <Field
-                type="text"
-                name="fuel_type"
-                placeholder="Fuel Type"
-                className="border px-2 py-1 rounded"
-              />
-              <button
-                type="submit"
-                className="bg-green-500 text-white px-4 py-1 rounded"
-              >
-                Add Pump
-              </button>
-            </div>
-            <div className="text-red-500 text-sm">
-              <ErrorMessage name="pump_number" />
-              <ErrorMessage name="fuel_type" />
-            </div>
-          </Form>
-        )}
-      </Formik>
     </div>
   );
 }

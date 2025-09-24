@@ -79,6 +79,42 @@ export default function StaffManager({ stationId, initialStaff }) {
     <div className="mt-6">
       <h2 className="text-xl font-semibold">Staff</h2>
 
+      {/* Add Staff Form */}
+      <Formik
+        initialValues={{ name: "", role: "" }}
+        validationSchema={staffSchema}
+        onSubmit={handleAddStaff}
+      >
+        {() => (
+          <Form className="mt-4 flex flex-col space-y-2">
+            <div className="flex space-x-2 items-center">
+              <Field
+                type="text"
+                name="name"
+                placeholder="Staff Name"
+                className="border px-2 py-1 rounded"
+              />
+              <Field
+                type="text"
+                name="role"
+                placeholder="Role"
+                className="border px-2 py-1 rounded"
+              />
+              <button
+                type="submit"
+                className="bg-green-500 text-white px-4 py-1 rounded"
+              >
+                Add Staff
+              </button>
+            </div>
+            <div className="text-red-500 text-sm">
+              <ErrorMessage name="name" />
+              <ErrorMessage name="role" />
+            </div>
+          </Form>
+        )}
+      </Formik>
+
       <ul className="mt-2 space-y-2">
         {staffList.length > 0 ? (
           staffList.map((member) => (
@@ -155,42 +191,6 @@ export default function StaffManager({ stationId, initialStaff }) {
           <p className="text-gray-500">No staff assigned yet</p>
         )}
       </ul>
-
-      {/* Add Staff Form */}
-      <Formik
-        initialValues={{ name: "", role: "" }}
-        validationSchema={staffSchema}
-        onSubmit={handleAddStaff}
-      >
-        {() => (
-          <Form className="mt-4 flex flex-col space-y-2">
-            <div className="flex space-x-2 items-center">
-              <Field
-                type="text"
-                name="name"
-                placeholder="Staff Name"
-                className="border px-2 py-1 rounded"
-              />
-              <Field
-                type="text"
-                name="role"
-                placeholder="Role"
-                className="border px-2 py-1 rounded"
-              />
-              <button
-                type="submit"
-                className="bg-green-500 text-white px-4 py-1 rounded"
-              >
-                Add Staff
-              </button>
-            </div>
-            <div className="text-red-500 text-sm">
-              <ErrorMessage name="name" />
-              <ErrorMessage name="role" />
-            </div>
-          </Form>
-        )}
-      </Formik>
     </div>
   );
 }
