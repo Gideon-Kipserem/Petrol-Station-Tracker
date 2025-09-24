@@ -3,7 +3,8 @@
 // Dashboard component for Next.js with Recharts and hardcoded CSS
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Fuel, Users, MapPin, BarChart3, Clock, AlertTriangle } from 'lucide-react';
+import { Fuel, Users, MapPin, BarChart3, Clock, AlertTriangle } from 'lucide-react';
+import Navigation from '../../components/Navigation';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -22,58 +23,56 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('7d'); // 7d, 30d, 90d
 
-  // Mock data: swap this for fetch('/api/dashboard') as above
+  // Real API data from Flask backend
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
         
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Fetch real data from Flask API
+        const response = await fetch('http://127.0.0.1:5555/dashboard');
+        if (!response.ok) {
+          throw new Error('Failed to fetch dashboard data');
+        }
         
-        // Mock data - replace with actual fetch calls to your Flask API
-        const mockData = {
-          totalRevenue: 125840.50,
-          totalLitres: 85420,
-          totalStations: 5,
-          totalStaff: 23,
-          todaySales: 45,
-          avgPricePerLitre: 147.32,
-          recentSales: [
-            { id: 1, pump: 'Pump 1 - Station A', fuelType: 'Diesel', litres: 45.2, amount: 6658.64, time: '2 minutes ago' },
-            { id: 2, pump: 'Pump 3 - Station B', fuelType: 'Unleaded', litres: 32.1, amount: 4540.32, time: '5 minutes ago' },
-            { id: 3, pump: 'Pump 2 - Station A', fuelType: 'Diesel', litres: 78.5, amount: 11567.80, time: '12 minutes ago' },
-            { id: 4, pump: 'Pump 1 - Station C', fuelType: 'Premium', litres: 25.0, amount: 3933.00, time: '18 minutes ago' },
-            { id: 5, pump: 'Pump 4 - Station B', fuelType: 'Unleaded', litres: 41.8, amount: 5912.76, time: '25 minutes ago' }
-          ],
-          fuelTypeData: [
-            { name: 'Diesel', value: 45.2, revenue: 67850, color: '#3B82F6' },
-            { name: 'Unleaded', value: 32.8, revenue: 42340, color: '#10B981' },
-            { name: 'Premium', value: 22.0, revenue: 35650, color: '#F59E0B' }
-          ],
+        const apiData = await response.json();
+        
+        // Transform API data to match dashboard component expectations
+        const transformedData = {
+          totalRevenue: apiData.totalRevenue || 0,
+          totalLitres: apiData.totalLitres || 0,
+          totalStations: apiData.totalStations || 0,
+          totalStaff: apiData.totalStaff || 0,
+          todaySales: apiData.todaySales || 0,
+          avgPricePerLitre: apiData.avgPricePerLitre || 0,
+          recentSales: (apiData.recentSales || []).map(sale => ({
+            id: sale.id,
+            pump: sale.pump ? `${sale.pump.pump_number} - ${sale.pump.station?.name || 'Unknown Station'}` : 'Unknown Pump',
+            fuelType: sale.fuel_type,
+            litres: sale.litres,
+            amount: sale.total_amount,
+            time: new Date(sale.sale_timestamp).toLocaleString()
+          })),
+          fuelTypeData: apiData.fuelTypeData || [],
           salesTrends: [
-            { date: 'Mon', sales: 32, revenue: 47580 },
-            { date: 'Tue', sales: 45, revenue: 65240 },
-            { date: 'Wed', sales: 38, revenue: 52130 },
-            { date: 'Thu', sales: 52, revenue: 73590 },
-            { date: 'Fri', sales: 68, revenue: 89470 },
-            { date: 'Sat', sales: 75, revenue: 98650 },
-            { date: 'Sun', sales: 41, revenue: 58920 }
+            // Mock trends for now - can be enhanced later with real historical data
+            { date: 'Mon', sales: Math.floor(apiData.todaySales * 0.8), revenue: apiData.totalRevenue * 0.1 },
+            { date: 'Tue', sales: Math.floor(apiData.todaySales * 0.9), revenue: apiData.totalRevenue * 0.12 },
+            { date: 'Wed', sales: Math.floor(apiData.todaySales * 0.7), revenue: apiData.totalRevenue * 0.11 },
+            { date: 'Thu', sales: Math.floor(apiData.todaySales * 1.1), revenue: apiData.totalRevenue * 0.15 },
+            { date: 'Fri', sales: Math.floor(apiData.todaySales * 1.3), revenue: apiData.totalRevenue * 0.18 },
+            { date: 'Sat', sales: Math.floor(apiData.todaySales * 1.5), revenue: apiData.totalRevenue * 0.2 },
+            { date: 'Sun', sales: Math.floor(apiData.todaySales * 0.9), revenue: apiData.totalRevenue * 0.14 }
           ],
-          topStations: [
-            { name: 'Station A - Downtown', sales: 156, revenue: 235680 },
-            { name: 'Station B - Highway', sales: 134, revenue: 198420 },
-            { name: 'Station C - Mall', sales: 89, revenue: 134570 },
-            { name: 'Station D - Airport', sales: 67, revenue: 102340 },
-            { name: 'Station E - Suburb', sales: 45, revenue: 68920 }
-          ],
-          lowStockAlerts: [
-            { station: 'Station A', fuelType: 'Premium', level: 15, threshold: 20 },
-            { station: 'Station C', fuelType: 'Diesel', level: 8, threshold: 15 }
-          ]
+          topStations: (apiData.topStations || []).map(station => ({
+            name: station.name,
+            sales: station.sales,
+            revenue: station.sales * 150 // Estimated revenue per sale
+          })),
+          lowStockAlerts: apiData.lowStockAlerts || []
         };
 
-        setDashboardData(mockData);
+        setDashboardData(transformedData);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -120,8 +119,9 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6">
-      <div className="max-w-7xl mx-auto animate-fade-in">
+    <Navigation>
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto animate-fade-in">
         {/* Header */}
         <div className="mb-8 animate-slide-in">
           <div className="flex items-center justify-between">
@@ -158,18 +158,12 @@ const Dashboard = () => {
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.1s'}}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">{formatCurrency(dashboardData.totalRevenue)}</p>
-                <p className="text-sm text-green-600 mt-1">
-                  <TrendingUp className="w-4 h-4 inline mr-1" />
-                  +12.5% from last period
-                </p>
-              </div>
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl shadow-lg">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+              <p className="text-2xl font-bold text-gray-900">{formatCurrency(dashboardData.totalRevenue)}</p>
+              <p className="text-sm text-green-600 mt-1">
+                +12.5% from last period
+              </p>
             </div>
           </div>
 
@@ -179,7 +173,6 @@ const Dashboard = () => {
                 <p className="text-sm font-medium text-gray-600">Total Litres Sold</p>
                 <p className="text-2xl font-bold text-gray-900">{formatNumber(dashboardData.totalLitres)}L</p>
                 <p className="text-sm text-green-600 mt-1">
-                  <TrendingUp className="w-4 h-4 inline mr-1" />
                   +8.2% from last period
                 </p>
               </div>
@@ -357,9 +350,8 @@ const Dashboard = () => {
 
           {/* Top Performing Stations */}
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in">
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6">
               <h3 className="text-lg font-semibold text-gray-900">Top Performing Stations</h3>
-              <TrendingUp className="w-5 h-5 text-gray-400" />
             </div>
             <div className="space-y-4">
               {dashboardData.topStations.map((station, index) => (
@@ -383,8 +375,9 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </Navigation>
   );
 };
 

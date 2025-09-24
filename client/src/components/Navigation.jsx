@@ -16,13 +16,19 @@ const Navigation = ({ children }) => {
   // Load auth and notifications from localStorage
   useEffect(() => {
     try {
-      const isAuth = localStorage.getItem('auth') === 'true';
+      const token = localStorage.getItem('auth_token');
       const name = localStorage.getItem('auth_name');
       const email = localStorage.getItem('auth_email');
-      if (isAuth && name && email) {
+      
+      if (token && name && email) {
         setUserName(name);
         setUserEmail(email);
       } else {
+        // Redirect to login if not authenticated
+        if (pathname !== '/login') {
+          window.location.href = '/login';
+          return;
+        }
         setUserName('Guest');
         setUserEmail('guest@petroltracker.com');
       }
@@ -30,14 +36,8 @@ const Navigation = ({ children }) => {
       const saved = localStorage.getItem('notifications');
       if (saved) setNotifications(JSON.parse(saved));
       else {
-        // Seed with example notifications
-        const seed = [
-          { id: 'n1', text: 'Low stock: Station A - Diesel below threshold', read: false, time: '2m ago' },
-          { id: 'n2', text: 'New sale recorded at Station B', read: false, time: '10m ago' },
-          { id: 'n3', text: 'Price update: Premium adjusted +1.2%', read: true, time: '1h ago' },
-        ];
-        setNotifications(seed);
-        localStorage.setItem('notifications', JSON.stringify(seed));
+        // Start with empty notifications - will be populated by real system events
+        setNotifications([]);
       }
     } catch (e) {
       // ignore localStorage errors
@@ -47,11 +47,24 @@ const Navigation = ({ children }) => {
   const navigation = [
     { name: 'Dashboard', href: '/', icon: BarChart3, current: pathname === '/' },
     { name: 'Stations', href: '/stations', icon: MapPin, current: pathname === '/stations' },
-    { name: 'Fuel Management', href: '/fuel', icon: Fuel, current: pathname === '/fuel' },
+    { name: 'Sales', href: '/sales', icon: Fuel, current: pathname === '/sales' },
     { name: 'Settings', href: '/settings', icon: Settings, current: pathname === '/settings' }
   ];
 
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleLogout = () => {
+    // Clear all auth data
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth');
+    localStorage.removeItem('auth_name');
+    localStorage.removeItem('auth_email');
+    localStorage.removeItem('auth_role');
+    localStorage.removeItem('auth_user_id');
+    
+    // Redirect to login
+    window.location.href = '/login';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -184,11 +197,15 @@ const Navigation = ({ children }) => {
 
               {/* Profile */}
               <div className="relative">
-                <Link href="/login" className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button 
+                  onClick={handleLogout}
+                  className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-gray-50 p-1 transition-colors"
+                  title="Logout"
+                >
                   <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                     <User className="h-4 w-4 text-white" />
                   </div>
-                </Link>
+                </button>
               </div>
             </div>
           </div>
