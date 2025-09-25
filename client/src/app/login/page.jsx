@@ -69,45 +69,49 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <div className="flex justify-center items-center mb-6">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-full">
-              <Fuel className="h-8 w-8 text-white" />
+    <div style={{height: 'calc((100vh - 6rem) * 1.2)', display: 'flex', flexDirection: 'column', margin: '-1.5rem -3rem', position: 'relative'}}>
+      {/* Header at Top */}
+      <div style={{padding: '2rem 1rem 1rem 1rem'}}>
+        <div className="text-center" style={{maxWidth: '448px', margin: '0 auto'}}>
+          <div className="flex justify-center items-center mb-4">
+            <div className="p-3 rounded-full" style={{backgroundColor: '#b2b8b7'}}>
+              <Fuel className="h-8 w-8" style={{color: '#002d32'}} />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold" style={{color: '#ffffff'}}>
             {isLogin ? 'Welcome back' : 'Create account'}
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm" style={{color: '#b2b8b7'}}>
             {isLogin 
-              ? 'Sign in to your Petrol Tracker account' 
-              : 'Join Petrol Tracker to manage your stations'
+              ? 'Sign in to your Smart Petro account' 
+              : 'Join Smart Petro to manage your stations'
             }
           </p>
         </div>
+      </div>
 
-        {/* Form */}
-        <div className="bg-white py-8 px-6 shadow-xl rounded-lg">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+      {/* Main Content */}
+      <div style={{flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 1rem', minHeight: '0'}}>
+        <div className="w-full" style={{maxWidth: '448px'}}>
+          {/* Form */}
+          <div className="py-8 px-6 rounded-lg" style={{backgroundColor: '#b2b8b7', borderRadius: '8px'}}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Error Message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-2">
-                <AlertCircle className="h-5 w-5 text-red-500" />
-                <span className="text-sm text-red-700">{error}</span>
+              <div className="rounded-lg p-4 flex items-center space-x-2" style={{backgroundColor: '#dea4aa', borderRadius: '8px'}}>
+                <AlertCircle className="h-5 w-5" style={{color: '#cf2d4d'}} />
+                <span className="text-sm" style={{color: '#000000'}}>{error}</span>
               </div>
             )}
 
             {/* Name Field (Register only) */}
             {!isLogin && (
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <div style={{padding: '0 1rem'}}>
+                <label htmlFor="name" className="block text-sm font-medium mb-2" style={{color: '#000000'}}>
                   Full Name
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div style={{position: 'relative', width: '80%', margin: '0 auto'}}>
+                  <div style={{position: 'absolute', top: '0', bottom: '0', left: '0', paddingLeft: '0.75rem', display: 'flex', alignItems: 'center', pointerEvents: 'none'}}>
                     <User className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
@@ -117,7 +121,22 @@ const LoginPage = () => {
                     required={!isLogin}
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    style={{
+                      paddingLeft: '2.5rem',
+                      paddingRight: '0.75rem',
+                      paddingTop: '0.75rem',
+                      paddingBottom: '0.75rem',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      lineHeight: '1.25',
+                      backgroundColor: 'white',
+                      width: '100%',
+                      maxWidth: 'none',
+                      display: 'block',
+                      textAlign: 'center',
+                      outline: 'none'
+                    }}
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -125,11 +144,11 @@ const LoginPage = () => {
             )}
 
             {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <div style={{padding: '0 1rem'}}>
+              <label htmlFor="email" className="block text-sm font-medium mb-2" style={{color: '#000000'}}>
                 Email Address
               </label>
-              <div className="relative">
+              <div className="relative" style={{width: '80%', margin: '0 auto'}}>
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
@@ -140,18 +159,33 @@ const LoginPage = () => {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  style={{
+                    paddingLeft: '2.5rem',
+                    paddingRight: '0.75rem',
+                    paddingTop: '0.75rem',
+                    paddingBottom: '0.75rem',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    lineHeight: '1.25',
+                    backgroundColor: 'white',
+                    width: '100%',
+                    maxWidth: 'none',
+                    display: 'block',
+                    textAlign: 'center',
+                    outline: 'none'
+                  }}
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
             {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <div style={{padding: '0 1rem'}}>
+              <label htmlFor="password" className="block text-sm font-medium mb-2" style={{color: '#000000'}}>
                 Password
               </label>
-              <div className="relative">
+              <div className="relative" style={{width: '80%', margin: '0 auto'}}>
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
@@ -162,18 +196,45 @@ const LoginPage = () => {
                   required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  style={{
+                    paddingLeft: '2.5rem',
+                    paddingRight: '2.5rem',
+                    paddingTop: '0.75rem',
+                    paddingBottom: '0.75rem',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    lineHeight: '1.25',
+                    backgroundColor: 'white',
+                    width: '100%',
+                    maxWidth: 'none',
+                    display: 'block',
+                    textAlign: 'center',
+                    outline: 'none'
+                  }}
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    top: '0',
+                    bottom: '0',
+                    right: '0',
+                    paddingRight: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    outline: 'none'
+                  }}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <EyeOff style={{height: '1rem', width: '1rem', color: '#9ca3af'}} />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <Eye style={{height: '1rem', width: '1rem', color: '#9ca3af'}} />
                   )}
                 </button>
               </div>
@@ -181,8 +242,8 @@ const LoginPage = () => {
 
             {/* Role Field (Register only) */}
             {!isLogin && (
-              <div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
+              <div style={{padding: '0 1rem'}}>
+                <label htmlFor="role" className="block text-sm font-medium mb-2" style={{color: '#000000'}}>
                   Role
                 </label>
                 <select
@@ -190,7 +251,8 @@ const LoginPage = () => {
                   name="role"
                   value={formData.role}
                   onChange={handleInputChange}
-                  className="block w-full px-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="px-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white focus:outline-none"
+                  style={{borderRadius: '8px', width: '80% !important', maxWidth: 'none !important', display: 'block', margin: '0 auto', textAlign: 'center'}}
                 >
                   <option value="user">User</option>
                   <option value="manager">Manager</option>
@@ -200,15 +262,18 @@ const LoginPage = () => {
             )}
 
             {/* Submit Button */}
-            <div>
+            <div style={{paddingTop: '1.5rem'}}>
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="flex justify-center py-2 px-6 text-sm font-medium rounded-lg text-black focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 mx-auto"
+                style={{backgroundColor: '#cfcfcf', borderRadius: '8px'}}
+                onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#b8b8b8')}
+                onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = '#cfcfcf')}
               >
                 {loading ? (
                   <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 mr-2" style={{borderColor: '#002d32'}}></div>
                     {isLogin ? 'Signing in...' : 'Creating account...'}
                   </div>
                 ) : (
@@ -218,7 +283,7 @@ const LoginPage = () => {
             </div>
 
             {/* Toggle Login/Register */}
-            <div className="text-center">
+            <div className="text-center" style={{paddingTop: '1rem'}}>
               <button
                 type="button"
                 onClick={() => {
@@ -226,7 +291,8 @@ const LoginPage = () => {
                   setError('');
                   setFormData({ name: '', email: '', password: '', role: 'user' });
                 }}
-                className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+                className="text-sm font-medium"
+                style={{color: '#000000'}}
               >
                 {isLogin 
                   ? "Don't have an account? Sign up" 
@@ -236,15 +302,18 @@ const LoginPage = () => {
             </div>
           </form>
         </div>
-
-        {/* Demo Credentials */}
-        <div className="bg-gray-50 rounded-lg p-4 text-center">
-          <p className="text-xs text-gray-600 mb-2">Demo Credentials (after registration):</p>
-          <p className="text-xs text-gray-500">
-            Create an account or use: admin@petroltracker.com / admin123
-          </p>
         </div>
       </div>
+
+      {/* Footer - Demo Credentials */}
+      <footer style={{position: 'absolute', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '448px'}}>
+        <div className="rounded-lg p-4 text-center" style={{backgroundColor: '#b2b8b7', borderRadius: '8px'}}>
+          <p className="text-xs mb-2" style={{color: '#000000'}}>Demo Credentials:</p>
+          <p className="text-xs" style={{color: '#000000'}}>
+            admin@petroltracker.com / admin123
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

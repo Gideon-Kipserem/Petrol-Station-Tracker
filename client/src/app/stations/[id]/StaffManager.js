@@ -77,7 +77,7 @@ export default function StaffManager({ stationId, initialStaff }) {
 
   return (
     <div className="mt-6">
-      <h2 className="text-xl font-semibold">Staff</h2>
+      <h2 className="text-xl font-semibold" style={{color: '#b2b8b7'}}>Staff</h2>
 
       {/* Add Staff Form */}
       <Formik
@@ -86,10 +86,10 @@ export default function StaffManager({ stationId, initialStaff }) {
         onSubmit={handleAddStaff}
       >
         {() => (
-          <Form className="mt-4 bg-gray-50 p-4 rounded-lg border">
+          <Form className="mt-4 p-4 rounded-lg border" style={{backgroundColor: '#b2b8b7'}}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium mb-1" style={{color: '#000000'}}>
                   Staff Name
                 </label>
                 <Field
@@ -101,7 +101,7 @@ export default function StaffManager({ stationId, initialStaff }) {
                 <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium mb-1" style={{color: '#000000'}}>
                   Role
                 </label>
                 <Field
@@ -121,7 +121,10 @@ export default function StaffManager({ stationId, initialStaff }) {
               <div className="flex items-end">
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-md focus:outline-none text-black"
+                  style={{backgroundColor: '#cfcfcf', borderRadius: '8px'}}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#b8b8b8'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#cfcfcf'}
                 >
                   Add Staff
                 </button>
@@ -136,7 +139,8 @@ export default function StaffManager({ stationId, initialStaff }) {
           staffList.map((member) => (
             <div
               key={member.id}
-              className="bg-card rounded-lg shadow-sm border border-gray-200 p-12"
+              className="rounded-lg border p-4"
+              style={{backgroundColor: '#b2b8b7', borderRadius: '8px'}}
             >
               {editingId === member.id ? (
                 // Inline Formik edit form
@@ -149,31 +153,44 @@ export default function StaffManager({ stationId, initialStaff }) {
                   onSubmit={(values) => handleUpdateStaff(member.id, values)}
                 >
                   {() => (
-                    <Form className="flex space-x-2 items-center">
+                    <Form className="grid grid-cols-1 md:grid-cols-4 gap-2 items-center">
                       <Field
                         type="text"
                         name="name"
-                        className="border px-2 py-1 rounded"
+                        className="border border-gray-300 px-3 py-2 rounded-md"
                       />
                       <Field
-                        type="text"
+                        as="select"
                         name="role"
-                        className="border px-2 py-1 rounded"
-                      />
+                        className="border border-gray-300 px-3 py-2 rounded-md"
+                      >
+                        <option value="">Select role</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Attendant">Attendant</option>
+                        <option value="Cashier">Cashier</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Mechanic">Mechanic</option>
+                      </Field>
                       <button
                         type="submit"
-                        className="bg-green-500 text-white px-2 py-1 rounded"
+                        className="px-3 py-2 text-black rounded-md focus:outline-none"
+                        style={{backgroundColor: '#cfcfcf', borderRadius: '8px'}}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#b8b8b8'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#cfcfcf'}
                       >
                         Save
                       </button>
                       <button
                         type="button"
                         onClick={() => setEditingId(null)}
-                        className="bg-gray-400 px-2 py-1 rounded"
+                        className="px-3 py-2 text-black rounded-md focus:outline-none"
+                        style={{backgroundColor: '#cfcfcf', borderRadius: '8px'}}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#b8b8b8'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#cfcfcf'}
                       >
                         Cancel
                       </button>
-                      <div className="text-red-500 text-sm">
+                      <div className="col-span-full text-red-500 text-sm">
                         <ErrorMessage name="name" />
                         <ErrorMessage name="role" />
                       </div>
@@ -183,19 +200,25 @@ export default function StaffManager({ stationId, initialStaff }) {
               ) : (
                 <div className="flex justify-between items-center">
                   <div>
-                    <h4 className="font-medium text-gray-900">{member.name}</h4>
-                    <p className="text-sm text-gray-600">{member.role}</p>
+                    <h4 className="font-medium" style={{color: '#000000'}}>{member.name}</h4>
+                    <p className="text-sm" style={{color: '#000000'}}>{member.role}</p>
                   </div>
                   <div className="flex space-x-2">
                     <button
                       onClick={() => setEditingId(member.id)}
-                      className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-xs font-medium"
+                      className="px-3 py-1 text-black text-xs font-medium rounded-md focus:outline-none"
+                      style={{backgroundColor: '#cfcfcf', borderRadius: '8px'}}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#b8b8b8'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#cfcfcf'}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteStaff(member.id)}
-                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-xs font-medium"
+                      className="px-3 py-1 text-black text-xs font-medium rounded-md focus:outline-none"
+                      style={{backgroundColor: '#dea4aa', borderRadius: '8px'}}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#cf2d4d'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#dea4aa'}
                     >
                       Delete
                     </button>
@@ -205,7 +228,7 @@ export default function StaffManager({ stationId, initialStaff }) {
             </div>
           ))
         ) : (
-          <p className="text-gray-500">No staff assigned yet</p>
+          <p style={{color: '#b2b8b7'}}>No staff assigned yet</p>
         )}
       </div>
     </div>
