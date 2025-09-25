@@ -10,6 +10,8 @@ export default function SalesPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [editingSale, setEditingSale] = useState(null);
+  const [showAllSales, setShowAllSales] = useState(false);
+  const [showAllStations, setShowAllStations] = useState(false);
 
   // Fetch sales & pumps from API
   useEffect(() => {
@@ -57,7 +59,7 @@ export default function SalesPage() {
       {/* Page Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Sales Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900 sales-management-heading">Sales Management</h1>
           <p className="text-gray-600 mt-1">Manage fuel sales and transactions</p>
         </div>
         <button
@@ -82,53 +84,79 @@ export default function SalesPage() {
         />
       )}
 
-      {/* Sales Summary by Station */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Sales by Station</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {(() => {
-            // Group sales by station
-            const salesByStation = sales.reduce((acc, sale) => {
-              const stationName = sale.pump?.station?.name || 'Unknown Station';
-              if (!acc[stationName]) {
-                acc[stationName] = { count: 0, total: 0, litres: 0 };
-              }
-              acc[stationName].count += 1;
-              acc[stationName].total += sale.total_amount;
-              acc[stationName].litres += sale.litres;
-              return acc;
-            }, {});
+      {/* Sales Summary and History Side by Side */}
+      <div className={`${showAllStations || showAllSales ? 'px-6' : 'flex justify-center px-6'}`}>
+        <div className={`${showAllStations || showAllSales ? 'w-full space-y-8' : 'grid grid-cols-2 gap-2 max-w-3xl w-full'}`}>
+          
+          {/* Sales Summary by Station */}
+          <div className={`${showAllStations || showAllSales ? 'w-full' : ''}`}>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">{showAllStations ? 'All Stations Performance' : 'Top Performing Station'}</h2>
+            {(() => {
+              // Group sales by station
+              const salesByStation = sales.reduce((acc, sale) => {
+                const stationName = sale.pump?.station?.name || 'Unknown Station';
+                if (!acc[stationName]) {
+                  acc[stationName] = { count: 0, total: 0, litres: 0 };
+                }
+                acc[stationName].count += 1;
+                acc[stationName].total += sale.total_amount;
+                acc[stationName].litres += sale.litres;
+                return acc;
+              }, {});
 
-            return Object.entries(salesByStation).map(([stationName, stats]) => (
-              <div key={stationName} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="p-8">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{stationName}</h3>
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex justify-between">
-                      <span>Sales:</span>
-                      <span className="font-medium text-gray-900">{stats.count}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Total:</span>
-                      <span className="font-medium text-gray-900">ksh{stats.total.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Litres:</span>
-                      <span className="font-medium text-gray-900">{stats.litres.toFixed(1)}L</span>
-                    </div>
+              // Sort by total sales and get top performer or all stations
+              const sortedStations = Object.entries(salesByStation)
+                .sort(([,a], [,b]) => b.total - a.total);
+              
+              const stationsToShow = showAllStations ? sortedStations : sortedStations.slice(0, 1);
+
+              return (
+                <>
+                  <div className={showAllStations ? "space-y-4" : "space-y-6"}>
+                    {stationsToShow.map(([stationName, stats]) => (
+                      <div key={stationName} className={`sales-card bg-card rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex flex-col ${showAllStations ? 'w-full h-24' : 'w-72 h-72 mx-auto'}`}>
+                        <div className={`${showAllStations ? 'p-3' : 'p-6'} flex-1 flex ${showAllStations ? 'flex-row items-center justify-between' : 'flex-col justify-between'}`}>
+                          <div className={`${showAllStations ? 'text-left' : 'text-center mb-4'}`}>
+                            <h3 className={`text-lg font-semibold text-gray-900 ${showAllStations ? 'mb-2' : 'mb-4'}`}>{stationName}</h3>
+                            <div className={`font-bold text-gray-900 ${showAllStations ? 'text-xl' : 'text-3xl mb-2'}`}>ksh{stats.total.toFixed(2)}</div>
+                          </div>
+                          
+                          <div className={`${showAllStations ? 'flex items-center space-x-6' : 'text-center space-y-3'}`}>
+                            <div className={`bg-blue-50 rounded-lg ${showAllStations ? 'p-2 min-w-16' : 'p-3'}`}>
+                              <div className={`font-bold text-blue-600 ${showAllStations ? 'text-sm' : 'text-2xl'}`}>{stats.count}</div>
+                              <div className={`text-gray-600 ${showAllStations ? 'text-xs' : 'text-sm'}`}>Sales</div>
+                            </div>
+                            <div className={`bg-green-50 rounded-lg ${showAllStations ? 'p-2 min-w-16' : 'p-3'}`}>
+                              <div className={`font-bold text-green-600 ${showAllStations ? 'text-sm' : 'text-2xl'}`}>{stats.litres.toFixed(1)}L</div>
+                              <div className={`text-gray-600 ${showAllStations ? 'text-xs' : 'text-sm'}`}>Litres</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </div>
-            ));
-          })()}
-        </div>
-      </div>
+                  
+                  {/* View More Button for Stations */}
+                  {sortedStations.length > 1 && (
+                    <div className={`mt-6 ${showAllStations || showAllSales ? 'text-left' : 'text-center'}`}>
+                      <button
+                        onClick={() => setShowAllStations(!showAllStations)}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+                      >
+                        {showAllStations ? 'Show Less' : `View More (${sortedStations.length - 1} more stations)`}
+                      </button>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
 
-      {/* Sales History */}
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Sales History</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sales.map((sale) => {
+          {/* Sales History */}
+          <div className={`${showAllStations || showAllSales ? 'w-full' : ''}`}>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">{showAllSales ? 'All Sales History' : 'Recent Sales'}</h2>
+            <div className={showAllSales ? "space-y-4" : "space-y-6"}>
+        {(showAllSales ? sales : sales.slice(0, 1)).map((sale) => {
           let fuelColor = "";
           switch (sale.fuel_type) {
             case "Regular":
@@ -145,51 +173,74 @@ export default function SalesPage() {
           }
 
           return (
-            <div key={sale.id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <div className="p-8">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="volume font-semibold text-gray-900 text-lg">{sale.litres}L</span>
+            <div key={sale.id} className={`sales-card bg-card rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex flex-col ${showAllSales ? 'w-full h-24' : 'w-72 h-72 mx-auto'}`}>
+              <div className={`${showAllSales ? 'p-3' : 'p-6'} flex-1 flex ${showAllSales ? 'flex-row items-center justify-between' : 'flex-col justify-between'}`}>
+                <div className={`${showAllSales ? 'text-left' : 'text-center mb-4'}`}>
+                  <div className={`transaction-amount font-bold text-gray-900 ${showAllSales ? 'text-xl mb-1' : 'text-2xl mb-2'}`}>ksh{sale.total_amount.toFixed(2)}</div>
+                  <div className={`${showAllSales ? 'flex items-center gap-2' : 'flex items-center justify-center gap-2 mb-2'}`}>
+                    <span className={`volume font-semibold text-gray-900 ${showAllSales ? 'text-base' : 'text-lg'}`}>{sale.litres}L</span>
                     <span className={`fuel-type px-2 py-1 rounded text-white text-sm ${fuelColor}`}>
                       {sale.fuel_type}
                     </span>
                   </div>
-                  <div className="text-right">
-                    <div className="transaction-amount font-bold text-gray-900 text-lg">ksh{sale.total_amount.toFixed(2)}</div>
-                  </div>
+                  {showAllSales && (
+                    <p className="text-gray-600 text-sm">{sale.pump?.pump_number} - {sale.pump?.station?.name || 'Unknown Station'}</p>
+                  )}
                 </div>
                 
-                <div className="mb-4">
-                  <p className="text-gray-600 mb-2">{sale.pump?.pump_number} - {sale.pump?.station?.name || 'Unknown Station'}</p>
-                  <div className="flex justify-between text-sm text-gray-500">
-                    <span>ksh{sale.price_per_litre}/L</span>
-                    <span>{new Date(sale.sale_timestamp).toLocaleDateString()}</span>
+                {!showAllSales && (
+                  <div className="text-center mb-4">
+                    <p className="text-gray-600 mb-2 text-sm">{sale.pump?.pump_number} - {sale.pump?.station?.name || 'Unknown Station'}</p>
+                    <div className="text-sm text-gray-500">
+                      <div>ksh{sale.price_per_litre}/L</div>
+                      <div>{new Date(sale.sale_timestamp).toLocaleDateString()}</div>
+                    </div>
                   </div>
-                </div>
+                )}
                 
-                <div className="pt-4 border-t border-gray-100">
-                  <div className="flex gap-2">
+                <div className={`${showAllSales ? 'flex items-center gap-3' : 'pt-4 border-t border-gray-100'}`}>
+                  <div className={`${showAllSales ? 'flex items-center gap-3' : 'flex justify-center gap-3'}`}>
                     <button
                       onClick={() => {
                         setEditingSale(sale);
                         setShowForm(true);
                       }}
-                      className="flex-1 px-3 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors text-sm font-medium"
+                      className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors text-xs font-medium"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(sale.id)}
-                      className="flex-1 px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm font-medium"
+                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-xs font-medium"
                     >
                       Delete
                     </button>
                   </div>
+                  {showAllSales && (
+                    <div className="text-sm text-gray-500 text-right">
+                      <div>ksh{sale.price_per_litre}/L</div>
+                      <div>{new Date(sale.sale_timestamp).toLocaleDateString()}</div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           );
         })}
+            </div>
+            
+            {/* View More Button for Sales */}
+            {sales.length > 1 && (
+              <div className={`mt-6 ${showAllStations || showAllSales ? 'text-left' : 'text-center'}`}>
+                <button
+                  onClick={() => setShowAllSales(!showAllSales)}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+                >
+                  {showAllSales ? 'Show Less' : `View More (${sales.length - 1} more sales)`}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

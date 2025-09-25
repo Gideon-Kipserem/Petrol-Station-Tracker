@@ -21,6 +21,8 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('7d'); // 7d, 30d, 90d
+  const [showAllSales, setShowAllSales] = useState(false);
+  const [showAllStations, setShowAllStations] = useState(false);
 
   // Real API data from Flask backend
   useEffect(() => {
@@ -125,7 +127,7 @@ const Dashboard = () => {
               <p className="text-gray-600 text-lg">Real-time insights into your fuel business operations</p>
             </div>
             <div className="hidden md:flex items-center space-x-4">
-              <div className="bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200">
+              <div className="bg-card rounded-lg px-4 py-2 shadow-sm border border-gray-200">
                 <span className="text-sm text-gray-500">Last updated:</span>
                 <span className="ml-1 text-sm font-medium text-gray-900">Just now</span>
               </div>
@@ -141,8 +143,23 @@ const Dashboard = () => {
                 className={`px-4 sm:px-6 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                   timeRange === range
                     ? 'bg-white text-blue-600 shadow-sm transform scale-105'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                    : 'text-gray-600 hover:text-white'
                 }`}
+                style={timeRange !== range ? {
+                  ':hover': { backgroundColor: '#002d32' }
+                } : {}}
+                onMouseEnter={(e) => {
+                  if (timeRange !== range) {
+                    e.target.style.backgroundColor = '#002d32';
+                    e.target.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (timeRange !== range) {
+                    e.target.style.backgroundColor = 'transparent';
+                    e.target.style.color = '#4b5563';
+                  }
+                }}
               >
                 {range === '7d' ? 'Last 7 Days' : range === '30d' ? 'Last 30 Days' : 'Last 90 Days'}
               </button>
@@ -151,8 +168,8 @@ const Dashboard = () => {
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.1s'}}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-card rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.1s'}}>
             <div>
               <p className="text-sm font-medium text-gray-600">Total Revenue</p>
               <p className="text-2xl font-bold text-gray-900">{formatCurrency(dashboardData.totalRevenue)}</p>
@@ -162,7 +179,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.2s'}}>
+          <div className="bg-card rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.2s'}}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Litres Sold</p>
@@ -177,7 +194,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.3s'}}>
+          <div className="bg-card rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.3s'}}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Active Stations</p>
@@ -190,7 +207,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.4s'}}>
+          <div className="bg-card rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in" style={{animationDelay: '0.4s'}}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Staff</p>
@@ -216,7 +233,7 @@ const Dashboard = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {dashboardData.lowStockAlerts.map((alert, index) => (
-                <div key={index} className="bg-white rounded-lg p-3 border border-red-200">
+                <div key={index} className="bg-card rounded-lg p-3 border border-red-200">
                   <p className="font-medium text-red-800">{alert.station}</p>
                   <p className="text-sm text-red-600">
                     {alert.fuelType}: {alert.level}% remaining (threshold: {alert.threshold}%)
@@ -230,10 +247,10 @@ const Dashboard = () => {
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Sales Trend Chart */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in">
+          <div className="bg-card rounded-xl shadow-lg border border-gray-200 p-8 card-hover animate-slide-in">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">Sales Trends</h3>
-              <BarChart3 className="w-5 h-5 text-gray-400" />
+              <BarChart3 className="w-5 h-5" style={{color: '#002d32'}} />
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={dashboardData.salesTrends}>
@@ -282,10 +299,10 @@ const Dashboard = () => {
           </div>
 
           {/* Fuel Type Distribution */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in">
+          <div className="bg-card rounded-xl shadow-lg border border-gray-200 p-8 card-hover animate-slide-in">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">Fuel Type Distribution</h3>
-              <Fuel className="w-5 h-5 text-gray-400" />
+              <Fuel className="w-5 h-5" style={{color: '#002d32'}} />
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -322,52 +339,129 @@ const Dashboard = () => {
         {/* Bottom Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Recent Sales */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in">
-            <div className="flex items-center justify-between mb-6">
+          <div className="bg-card rounded-xl shadow-lg border border-gray-200 p-8 card-hover animate-slide-in">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Recent Sales</h3>
-              <Clock className="w-5 h-5 text-gray-400" />
+              <Clock className="w-5 h-5" style={{color: '#002d32'}} />
             </div>
-            <div className="space-y-4">
-              {dashboardData.recentSales.map((sale) => (
-                <div key={sale.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900">{sale.pump}</p>
-                    <p className="text-sm text-gray-600">{sale.fuelType} • {sale.litres}L</p>
+            
+            {!showAllSales ? (
+              // Compact view - show only the most recent sale
+              <div>
+                {dashboardData.recentSales.length > 0 && (
+                  <div className="rounded-lg p-6 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">{dashboardData.recentSales[0].pump}</p>
+                        <p className="text-sm text-gray-600">{dashboardData.recentSales[0].fuelType} • {dashboardData.recentSales[0].litres}L</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900">{formatCurrency(dashboardData.recentSales[0].amount)}</p>
+                        <p className="text-xs text-gray-500">{dashboardData.recentSales[0].time}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">{formatCurrency(sale.amount)}</p>
-                    <p className="text-xs text-gray-500">{sale.time}</p>
-                  </div>
+                )}
+                <button
+                  onClick={() => setShowAllSales(true)}
+                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors text-sm font-medium"
+                >
+                  View More ({dashboardData.recentSales.length} total)
+                </button>
+              </div>
+            ) : (
+              // Expanded view - show all sales
+              <div>
+                <div className="space-y-3 max-h-64 overflow-y-auto mb-4">
+                  {dashboardData.recentSales.map((sale) => (
+                    <div key={sale.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">{sale.pump}</p>
+                        <p className="text-sm text-gray-600">{sale.fuelType} • {sale.litres}L</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900">{formatCurrency(sale.amount)}</p>
+                        <p className="text-xs text-gray-500">{sale.time}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+                <button
+                  onClick={() => setShowAllSales(false)}
+                  className="w-full bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors text-sm font-medium"
+                >
+                  Show Less
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Top Performing Stations */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 card-hover animate-slide-in">
-            <div className="mb-6">
+          <div className="bg-card rounded-xl shadow-lg border border-gray-200 p-8 card-hover animate-slide-in">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Top Performing Stations</h3>
+              <BarChart3 className="w-5 h-5" style={{color: '#002d32'}} />
             </div>
-            <div className="space-y-4">
-              {dashboardData.topStations.map((station, index) => (
-                <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                  <div className="flex items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white mr-3 ${
-                      index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-orange-500' : 'bg-gray-300'
-                    }`}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{station.name}</p>
-                      <p className="text-sm text-gray-600">{station.sales} sales</p>
+            
+            {!showAllStations ? (
+              // Compact view - show only the top station
+              <div>
+                {dashboardData.topStations.length > 0 && (
+                  <div className="rounded-lg p-6 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white mr-3 bg-yellow-500">
+                          1
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{dashboardData.topStations[0].name}</p>
+                          <p className="text-sm text-gray-600">{dashboardData.topStations[0].sales} sales</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900">{formatCurrency(dashboardData.topStations[0].revenue)}</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">{formatCurrency(station.revenue)}</p>
-                  </div>
+                )}
+                <button
+                  onClick={() => setShowAllStations(true)}
+                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors text-sm font-medium"
+                >
+                  View More ({dashboardData.topStations.length} total)
+                </button>
+              </div>
+            ) : (
+              // Expanded view - show all stations
+              <div>
+                <div className="space-y-3 max-h-64 overflow-y-auto mb-4">
+                  {dashboardData.topStations.map((station, index) => (
+                    <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+                      <div className="flex items-center">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white mr-3 ${
+                          index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-orange-500' : 'bg-gray-300'
+                        }`}>
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{station.name}</p>
+                          <p className="text-sm text-gray-600">{station.sales} sales</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900">{formatCurrency(station.revenue)}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+                <button
+                  onClick={() => setShowAllStations(false)}
+                  className="w-full bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors text-sm font-medium"
+                >
+                  Show Less
+                </button>
+              </div>
+            )}
           </div>
         </div>
         </div>

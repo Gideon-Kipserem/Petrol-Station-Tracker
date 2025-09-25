@@ -39,7 +39,7 @@ function EditStationModal({ isOpen, onClose, station, onSave }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+      <div className="bg-card rounded-lg p-12 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">Edit Station</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -193,48 +193,50 @@ export default function StationDetail() {
       </button>
 
       {/* Header with station info and actions */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">{station.name}</h1>
-            <p className="text-gray-600 mt-1">
-              <i className="fas fa-map-marker-alt mr-2"></i>
-              {station.location}
-            </p>
+      <div className="bg-card rounded-lg shadow p-6 mb-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">{station.name}</h1>
+              <p className="text-gray-600 text-sm">
+                <i className="fas fa-map-marker-alt mr-1"></i>
+                {station.location}
+              </p>
+            </div>
+            
+            {/* Inline Stats */}
+            <div className="flex items-center space-x-4 text-sm">
+              <div className="flex items-center bg-blue-50 px-3 py-1 rounded-md">
+                <span className="text-blue-600 font-medium">{station.pumps?.length || 0}</span>
+                <span className="text-gray-500 ml-1">Pumps</span>
+              </div>
+              <div className="flex items-center bg-green-50 px-3 py-1 rounded-md">
+                <span className="text-green-600 font-medium">{station.staff?.length || 0}</span>
+                <span className="text-gray-500 ml-1">Staff</span>
+              </div>
+              <div className="flex items-center">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Active
+                </span>
+              </div>
+            </div>
           </div>
+          
           <div className="flex space-x-2">
             <button
               onClick={() => setIsEditModalOpen(true)}
-              className="px-4 py-2 bg-yellow-400 text-gray-800 rounded hover:bg-yellow-500 transition-colors flex items-center"
+              className="px-3 py-1 bg-yellow-400 text-gray-800 rounded hover:bg-yellow-500 transition-colors flex items-center text-sm"
             >
-              <i className="fas fa-edit mr-2"></i>
+              <i className="fas fa-edit mr-1"></i>
               Edit
             </button>
             <button
               onClick={handleDeleteStation}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors flex items-center"
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors flex items-center text-sm"
             >
-              <i className="fas fa-trash-alt mr-2"></i>
+              <i className="fas fa-trash-alt mr-1"></i>
               Delete
             </button>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="text-gray-500 text-sm font-medium">Total Pumps</h3>
-            <p className="text-2xl font-bold">{station.pumps?.length || 0}</p>
-          </div>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="text-gray-500 text-sm font-medium">Staff Members</h3>
-            <p className="text-2xl font-bold">{station.staff?.length || 0}</p>
-          </div>
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <h3 className="text-gray-500 text-sm font-medium">Status</h3>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              Active
-            </span>
           </div>
         </div>
       </div>
@@ -242,7 +244,7 @@ export default function StationDetail() {
       {/* Pump Manager */}
       <div className="mb-8">
         <h2 className="text-xl font-bold mb-4 text-gray-800">Pumps Management</h2>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-card rounded-lg shadow p-12">
           <PumpManager stationId={stationId} initialPumps={station.pumps} />
         </div>
       </div>
@@ -250,7 +252,7 @@ export default function StationDetail() {
       {/* Staff Manager */}
       <div className="mb-8">
         <h2 className="text-xl font-bold mb-4 text-gray-800">Staff Management</h2>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-card rounded-lg shadow p-12">
           <StaffManager stationId={stationId} initialStaff={station.staff} />
         </div>
       </div>

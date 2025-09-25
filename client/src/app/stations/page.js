@@ -95,8 +95,8 @@ export default function StationsPage() {
       </div>
 
       {/* Add Station Form */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4 text-gray-900">Add New Station</h2>
+      <div className="p-12 mb-8">
+        <h2 className="text-xl font-semibold mb-4 text-white">Add New Station</h2>
         <form onSubmit={handleAddStation} className="space-y-4">
           {error && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
@@ -105,7 +105,7 @@ export default function StationsPage() {
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="name" className="block text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-white mb-2">
                 Station Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -119,7 +119,7 @@ export default function StationsPage() {
               />
             </div>
             <div>
-              <label htmlFor="location" className="block text-gray-700 mb-2">
+              <label htmlFor="location" className="block text-white mb-2">
                 Location <span className="text-red-500">*</span>
               </label>
               <input
@@ -157,18 +157,18 @@ export default function StationsPage() {
 
       {/* Stations Grid */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">All Stations</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-3 text-center">All Stations</h2>
         
         {stations.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center text-gray-500">
+          <div className="bg-card rounded-xl shadow-sm border border-gray-200 p-10 text-center text-gray-500">
             No stations found. Add your first station above.
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {stations.map((station) => (
-              <div key={station.id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+              <div key={station.id} className="bg-card rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow min-w-80">
                 <Link href={`/stations/${station.id}`}>
-                  <div className="p-8">
+                  <div className="p-12">
                     <div className="mb-4">
                       <h3 className="text-lg font-semibold text-gray-900">{station.name}</h3>
                     </div>

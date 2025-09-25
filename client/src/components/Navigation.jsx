@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, Fuel, MapPin, Users, Menu, X, Search, User, Bell } from 'lucide-react';
+import { BarChart3, Fuel, MapPin, Users, Menu, X, User, Bell } from 'lucide-react';
 
 const Navigation = ({ children }) => {
   const pathname = usePathname();
@@ -66,7 +66,7 @@ const Navigation = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen flex" style={{backgroundColor: '#eaeaea'}}>
+    <div className="min-h-screen flex pr-8" style={{backgroundColor: '#002d32'}}>
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
@@ -75,8 +75,8 @@ const Navigation = ({ children }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 navbar-bg-image pr-6`}>
-        <div className="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-blue-600 to-blue-700 relative z-10">
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 shadow-xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 navbar-bg-image pr-6`}>
+        <div className="flex items-center justify-between h-16 px-6 relative z-10">
           <div className="flex items-center">
             <Fuel className="h-8 w-8 text-white" />
             <span className="ml-2 text-lg font-bold text-white">Smart Petro</span>
@@ -88,6 +88,7 @@ const Navigation = ({ children }) => {
             <X className="h-6 w-6" />
           </button>
         </div>
+        
         
         <nav className="mt-8 px-4">
           <div className="space-y-2">
@@ -102,7 +103,7 @@ const Navigation = ({ children }) => {
                     item.current
                       ? 'bg-blue-50 border-r-4 border-blue-600 text-blue-700'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  } group flex items-center px-3 py-3 text-sm font-medium rounded-l-lg transition-colors duration-200`}
+                  } group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200`}
                 >
                   <Icon className={`${
                     item.current ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'
@@ -114,46 +115,33 @@ const Navigation = ({ children }) => {
           </div>
         </nav>
 
-        {/* User profile section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                <User className="h-5 w-5 text-white" />
-              </div>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-700">{userName}</p>
-              <p className="text-xs text-gray-500">{userEmail}</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden ml-6">
         {/* Top navigation */}
-        <header className="bg-white shadow-sm border-b border-gray-200 lg:static">
+        <header className="shadow-sm border-b border-gray-200 lg:static" style={{backgroundColor: '#002d32'}}>
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-gray-500 hover:text-gray-700"
+                className="lg:hidden text-white hover:text-gray-300"
               >
                 <Menu className="h-6 w-6" />
               </button>
               
-              {/* Search bar */}
-              <div className="hidden md:block ml-4 lg:ml-0">
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-gray-400" />
+              {/* User profile section */}
+              <div className="hidden md:flex items-center ml-4 lg:ml-0">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{backgroundColor: '#b2b8b7'}}>
+                      <User className="h-4 w-4" style={{color: '#002d32'}} />
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Search stations, staff, or transactions..."
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  />
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-white">{userName}</p>
+                    <p className="text-xs text-white">{userEmail}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -163,7 +151,8 @@ const Navigation = ({ children }) => {
               <div className="relative">
                 <button
                   onClick={() => setNotifOpen(!notifOpen)}
-                  className="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full"
+                  className="relative p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full"
+                  style={{color: '#002d32'}}
                 >
                   <Bell className="h-6 w-6" />
                   {unreadCount > 0 && (
@@ -198,12 +187,12 @@ const Navigation = ({ children }) => {
               <div className="relative">
                 <button 
                   onClick={handleLogout}
-                  className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-gray-50 p-1 transition-colors"
-                  title="Logout"
+                  className="px-4 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+                  style={{backgroundColor: '#cfcfcf', color: '#333333'}}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#cf2d4d'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#cfcfcf'}
                 >
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                    <User className="h-4 w-4 text-white" />
-                  </div>
+                  Logout
                 </button>
               </div>
             </div>
@@ -211,8 +200,8 @@ const Navigation = ({ children }) => {
         </header>
 
         {/* Main content area */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-8">
+        <main className="flex-1 overflow-y-auto" style={{backgroundColor: '#002d32'}}>
+          <div className="p-6 pr-12">
             {children}
           </div>
         </main>

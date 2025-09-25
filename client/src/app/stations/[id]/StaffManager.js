@@ -131,12 +131,12 @@ export default function StaffManager({ stationId, initialStaff }) {
         )}
       </Formik>
 
-      <ul className="mt-2 space-y-2">
+      <div className="mt-4 grid gap-4">
         {staffList.length > 0 ? (
           staffList.map((member) => (
-            <li
+            <div
               key={member.id}
-              className="border rounded p-2 flex justify-between items-center"
+              className="bg-card rounded-lg shadow-sm border border-gray-200 p-12"
             >
               {editingId === member.id ? (
                 // Inline Formik edit form
@@ -181,32 +181,33 @@ export default function StaffManager({ stationId, initialStaff }) {
                   )}
                 </Formik>
               ) : (
-                <>
-                  <span>
-                    {member.name} — {member.role}
-                  </span>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h4 className="font-medium text-gray-900">{member.name}</h4>
+                    <p className="text-sm text-gray-600">{member.role}</p>
+                  </div>
                   <div className="flex space-x-2">
                     <button
                       onClick={() => setEditingId(member.id)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm"
+                      className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-xs font-medium"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteStaff(member.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-xs font-medium"
                     >
                       Delete
                     </button>
                   </div>
-                </>
+                </div>
               )}
-            </li>
+            </div>
           ))
         ) : (
           <p className="text-gray-500">No staff assigned yet</p>
         )}
-      </ul>
+      </div>
     </div>
   );
 }

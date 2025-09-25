@@ -71,9 +71,9 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
       {editingSale ? (
         // Edit form - appears on right side
         <div className="fixed top-0 right-0 h-full w-[55%] z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full h-full overflow-y-auto">
+          <div className="bg-card rounded-lg shadow-xl w-full h-full overflow-y-auto">
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+            <div className="flex justify-between items-center p-12 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Edit Sale</h3>
               <button
                 onClick={() => { setEditingSale(null); setShowForm(false); }}
@@ -83,7 +83,7 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
               </button>
             </div>
             {/* Form Content */}
-            <div className="p-6">
+            <div className="p-12">
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -137,11 +137,11 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
           </div>
         </div>
       ) : (
-        // Add form - appears centered
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-[60%] max-h-[90vh] overflow-y-auto">
+        // Add form - appears on right side like edit form
+        <div className="fixed top-0 right-0 h-full w-[55%] z-50 p-4">
+          <div className="bg-card rounded-lg shadow-xl w-full h-full overflow-y-auto">
             {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+            <div className="flex justify-between items-center p-12 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Add New Sale</h3>
               <button
                 onClick={() => { setEditingSale(null); setShowForm(false); }}
@@ -151,7 +151,7 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
               </button>
             </div>
             {/* Form Content */}
-            <div className="p-6">
+            <div className="p-12">
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
