@@ -53,7 +53,7 @@ export default function SalesPage() {
   if (loading) return <p className="text-gray-600">Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 p-6">
+    <div className="min-h-full text-gray-900 max-w-[60%] mx-auto">
       {/* Page Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -83,9 +83,9 @@ export default function SalesPage() {
       )}
 
       {/* Sales Summary by Station */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900">Sales by Station</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Sales by Station</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {(() => {
             // Group sales by station
             const salesByStation = sales.reduce((acc, sale) => {
@@ -100,12 +100,23 @@ export default function SalesPage() {
             }, {});
 
             return Object.entries(salesByStation).map(([stationName, stats]) => (
-              <div key={stationName} className="bg-gray-100 border border-gray-200 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{stationName}</h3>
-                <div className="space-y-1 text-sm text-gray-700">
-                  <div>Sales: {stats.count}</div>
-                  <div>Total: ksh{stats.total.toFixed(2)}</div>
-                  <div>Litres: {stats.litres.toFixed(1)}L</div>
+              <div key={stationName} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="p-8">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{stationName}</h3>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <div className="flex justify-between">
+                      <span>Sales:</span>
+                      <span className="font-medium text-gray-900">{stats.count}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total:</span>
+                      <span className="font-medium text-gray-900">ksh{stats.total.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Litres:</span>
+                      <span className="font-medium text-gray-900">{stats.litres.toFixed(1)}L</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ));
@@ -115,8 +126,8 @@ export default function SalesPage() {
 
       {/* Sales History */}
       <div>
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900">Sales History</h2>
-        <div className="sales-history space-y-4">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Sales History</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sales.map((sale) => {
           let fuelColor = "";
           switch (sale.fuel_type) {
@@ -134,45 +145,46 @@ export default function SalesPage() {
           }
 
           return (
-            <div
-              key={sale.id}
-              className="transaction flex justify-between items-center p-4 rounded-lg bg-gray-100 border border-gray-200 text-gray-900"
-            >
-              <div className="transaction-content space-y-1">
-                <div className="transaction-line flex items-center gap-2">
-                  <span className="volume font-semibold text-gray-900">{sale.litres}L</span>
-                  <span className={`fuel-type px-2 py-1 rounded text-white ${fuelColor}`}>
-                    {sale.fuel_type}
-                  </span>
-                  <span className="divider text-gray-500">•</span>
-                  <span className="pump-info text-gray-900">{sale.pump?.pump_number} - {sale.pump?.station?.name || 'Unknown Station'}</span>
+            <div key={sale.id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+              <div className="p-8">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="volume font-semibold text-gray-900 text-lg">{sale.litres}L</span>
+                    <span className={`fuel-type px-2 py-1 rounded text-white text-sm ${fuelColor}`}>
+                      {sale.fuel_type}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <div className="transaction-amount font-bold text-gray-900 text-lg">ksh{sale.total_amount.toFixed(2)}</div>
+                  </div>
                 </div>
-                <div className="transaction-line flex items-center gap-2 text-sm text-gray-600">
-                  <span className="price-info">ksh{sale.price_per_litre}/L</span>
-                  <span className="divider text-gray-500">•</span>
-                  <span className="date-info">{new Date(sale.sale_timestamp).toLocaleString()}</span>
-                  <span className="divider text-gray-500">•</span>
+                
+                <div className="mb-4">
+                  <p className="text-gray-600 mb-2">{sale.pump?.pump_number} - {sale.pump?.station?.name || 'Unknown Station'}</p>
+                  <div className="flex justify-between text-sm text-gray-500">
+                    <span>ksh{sale.price_per_litre}/L</span>
+                    <span>{new Date(sale.sale_timestamp).toLocaleDateString()}</span>
+                  </div>
                 </div>
-              </div>
-
-              <div className="transaction-actions flex flex-col items-end gap-2">
-                <div className="transaction-amount font-bold text-gray-900">ksh{sale.total_amount.toFixed(2)}</div>
-                <div className="action-icons flex gap-2">
-                  <button
-                    onClick={() => {
-                      setEditingSale(sale);
-                      setShowForm(true);
-                    }}
-                    className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(sale.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
-                  >
-                    Delete
-                  </button>
+                
+                <div className="pt-4 border-t border-gray-100">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setEditingSale(sale);
+                        setShowForm(true);
+                      }}
+                      className="flex-1 px-3 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors text-sm font-medium"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(sale.id)}
+                      className="flex-1 px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm font-medium"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

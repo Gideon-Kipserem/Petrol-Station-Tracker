@@ -83,20 +83,20 @@ export default function StationsPage() {
   }
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Petrol Stations</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Petrol Stations</h1>
         <Link 
           href="/" 
-          className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
         >
           Back to Dashboard
         </Link>
       </div>
 
       {/* Add Station Form */}
-      <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Add New Station</h2>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <h2 className="text-xl font-semibold mb-4 text-gray-900">Add New Station</h2>
         <form onSubmit={handleAddStation} className="space-y-4">
           {error && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
@@ -113,7 +113,7 @@ export default function StationsPage() {
                 id="name"
                 value={newStationName}
                 onChange={(e) => setNewStationName(e.target.value)}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 placeholder="Enter station name"
                 required
               />
@@ -127,7 +127,7 @@ export default function StationsPage() {
                 id="location"
                 value={newStationLocation}
                 onChange={(e) => setNewStationLocation(e.target.value)}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 placeholder="Enter location"
                 required
               />
@@ -137,7 +137,7 @@ export default function StationsPage() {
             <button
               type="submit"
               disabled={isAdding}
-              className={`px-6 py-2 rounded-md text-white ${isAdding ? 'bg-green-400' : 'bg-green-500 hover:bg-green-600'} transition-colors flex items-center`}
+              className={`px-6 py-3 rounded-md text-white font-medium ${isAdding ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500`}
             >
               {isAdding ? (
                 <>
@@ -155,61 +155,56 @@ export default function StationsPage() {
         </form>
       </div>
 
-      {/* Stations List */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b">
-          <h2 className="text-xl font-semibold text-gray-800">All Stations</h2>
-        </div>
+      {/* Stations Grid */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">All Stations</h2>
         
         {stations.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center text-gray-500">
             No stations found. Add your first station above.
           </div>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {stations.map((station) => (
-              <li key={station.id} className="hover:bg-gray-50 transition-colors">
+              <div key={station.id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                 <Link href={`/stations/${station.id}`}>
-                  <div className="px-6 py-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-800">{station.name}</h3>
-                        <p className="text-gray-600">
-                          <i className="fas fa-map-marker-alt mr-2 text-blue-500"></i>
-                          {station.location}
-                        </p>
-                        <div className="mt-2 flex space-x-4 text-sm text-gray-500">
-                          <span className="flex items-center">
-                            <i className="fas fa-gas-pump mr-1"></i>
-                            {station.pumps?.length || 0} Pumps
-                          </span>
-                          <span className="flex items-center">
-                            <i className="fas fa-users mr-1"></i>
-                            {station.staff?.length || 0} Staff
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={(e) => handleDeleteStation(station.id, e)}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                          title="Delete Station"
-                        >
-                          <i className="fas fa-trash"></i>
+                  <div className="p-8">
+                    <div className="mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">{station.name}</h3>
+                    </div>
+                    
+                    <p className="text-gray-600 mb-4">
+                      {station.location}
+                    </p>
+                    
+                    <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
+                      <span className="flex items-center">
+                        {station.pumps?.length || 0} Pumps
+                      </span>
+                      <span className="flex items-center">
+                        {station.staff?.length || 0} Staff
+                      </span>
+                    </div>
+                    
+                    <div className="pt-4 border-t border-gray-100">
+                      <div className="flex justify-center gap-3">
+                        <button className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-xs font-medium">
+                          View Details
                         </button>
                         <button
-                          className="p-2 text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
-                          title="View Details"
+                          onClick={(e) => handleDeleteStation(station.id, e)}
+                          className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-xs font-medium"
+                          title="Delete Station"
                         >
-                          <i className="fas fa-chevron-right"></i>
+                          Delete
                         </button>
                       </div>
                     </div>
                   </div>
                 </Link>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
