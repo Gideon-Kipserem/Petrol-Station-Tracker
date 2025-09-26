@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: petrol-station-tracker
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "cd server && gunicorn app:app"
+    plan: free
+    envVars:
+      - key: FLASK_APP
+        value: app.py
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        generateValue: true
