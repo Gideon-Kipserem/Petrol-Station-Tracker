@@ -2,6 +2,11 @@
 
 A comprehensive full-stack web application for managing petrol stations, staff, pumps, and sales operations. Built with Flask backend and Next.js frontend, featuring real-time analytics, dynamic UI components, and complete CRUD functionality.
 
+## Preview
+<img width="958" height="474" alt="smart petro preview" src="https://github.com/user-attachments/assets/3c066352-9152-433a-9f84-9f07115c81e9" />
+
+
+
 ## Application Overview
 
 Smart Petro is a professional petrol station management system designed to streamline operations across multiple locations. The application provides station managers with tools to track sales performance, manage staff assignments, monitor pump operations, and analyze business metrics through an intuitive dashboard interface.
