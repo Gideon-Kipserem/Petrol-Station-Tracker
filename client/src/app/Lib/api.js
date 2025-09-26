@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:5555";
+const BASE_URL = "https://petrol-station-tracker-5.onrender.com";
 // get station by id
 export async function getStationById(id) {
   const res = await fetch(`${BASE_URL}/stations/${id}`, { cache: "no-store" });
