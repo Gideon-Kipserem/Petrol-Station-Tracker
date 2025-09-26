@@ -1,4 +1,5 @@
-const BASE_URL = "https://petrol-station-tracker-7.onrender.com";
+// Use environment variable for API URL, fallback to production URL
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://petrol-station-tracker-7.onrender.com";
 // get station by id
 export async function getStationById(id) {
   const res = await fetch(`${BASE_URL}/stations/${id}`, { cache: "no-store" });
