@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_migrate import Migrate
-from server.config import Config
-from server.models import db, User, UserSale, Pump, Sale, Station, Staff
+from config import Config
+from models import db, User, UserSale, Pump, Sale, Station, Staff
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
