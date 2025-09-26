@@ -17,9 +17,10 @@ export default function SalesPage() {
   useEffect(() => {
     async function fetchData() {
       try {
+        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://petrol-station-tracker-7.onrender.com";
         const [salesRes, pumpsRes] = await Promise.all([
-          fetch("http://127.0.0.1:5555/sales"),
-          fetch("http://127.0.0.1:5555/pumps"),
+          fetch(`${BASE_URL}/sales`),
+          fetch(`${BASE_URL}/pumps`),
         ]);
 
         if (!salesRes.ok || !pumpsRes.ok) throw new Error("Fetch failed");
@@ -44,7 +45,8 @@ export default function SalesPage() {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:5555/sales/${id}`, { method: "DELETE" });
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://petrol-station-tracker-7.onrender.com";
+      const res = await fetch(`${BASE_URL}/sales/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
       setSales(sales.filter((s) => s.id !== id));
     } catch (err) {

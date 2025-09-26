@@ -37,7 +37,8 @@ const LoginPage = () => {
         ? { email: formData.email, password: formData.password }
         : formData;
 
-      const response = await fetch(`http://127.0.0.1:5555${endpoint}`, {
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://petrol-station-tracker-7.onrender.com";
+      const response = await fetch(`${BASE_URL}/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

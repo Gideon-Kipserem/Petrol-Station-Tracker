@@ -2,6 +2,9 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
+// Use environment variable for API URL, fallback to production URL
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://petrol-station-tracker-7.onrender.com";
+
 const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm }) => {
   const initialValues = editingSale
     ? {
@@ -42,7 +45,7 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
 
     try {
       if (editingSale) {
-        const res = await fetch(`http://127.0.0.1:5555/sales/${editingSale.id}`, {
+        const res = await fetch(`${BASE_URL}/sales/${editingSale.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -51,7 +54,7 @@ const SaleForm = ({ setSales, pumps, editingSale, setEditingSale, setShowForm })
         setSales((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
         setEditingSale(null);
       } else {
-        const res = await fetch("http://127.0.0.1:5555/sales", {
+        const res = await fetch(`${BASE_URL}/sales`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

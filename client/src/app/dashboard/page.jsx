@@ -31,7 +31,8 @@ const Dashboard = () => {
         setLoading(true);
         
         // Fetch real data from Flask API
-        const response = await fetch('http://127.0.0.1:5555/dashboard');
+        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://petrol-station-tracker-7.onrender.com";
+        const response = await fetch(`${BASE_URL}/dashboard`);
         if (!response.ok) {
           throw new Error('Failed to fetch dashboard data');
         }
