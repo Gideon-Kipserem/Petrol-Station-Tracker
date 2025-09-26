@@ -2,13 +2,11 @@ services:
   - type: web
     name: petrol-station-tracker
     env: python
-    buildCommand: "pip install -r requirements.txt && cd server && flask db upgrade && python seed.py"
-    startCommand: "cd server && gunicorn app:app"
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "./start.sh"
     plan: free
     envVars:
       - key: FLASK_APP
         value: app.py
       - key: FLASK_ENV
         value: production
-      - key: DATABASE_URL
-        generateValue: true
