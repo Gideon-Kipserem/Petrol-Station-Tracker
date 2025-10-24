@@ -56,20 +56,11 @@ const Dashboard = () => {
             time: new Date(sale.sale_timestamp).toLocaleString()
           })),
           fuelTypeData: apiData.fuelTypeData || [],
-          salesTrends: [
-            // Mock trends for now - can be enhanced later with real historical data
-            { date: 'Mon', sales: Math.floor(apiData.todaySales * 0.8), revenue: apiData.totalRevenue * 0.1 },
-            { date: 'Tue', sales: Math.floor(apiData.todaySales * 0.9), revenue: apiData.totalRevenue * 0.12 },
-            { date: 'Wed', sales: Math.floor(apiData.todaySales * 0.7), revenue: apiData.totalRevenue * 0.11 },
-            { date: 'Thu', sales: Math.floor(apiData.todaySales * 1.1), revenue: apiData.totalRevenue * 0.15 },
-            { date: 'Fri', sales: Math.floor(apiData.todaySales * 1.3), revenue: apiData.totalRevenue * 0.18 },
-            { date: 'Sat', sales: Math.floor(apiData.todaySales * 1.5), revenue: apiData.totalRevenue * 0.2 },
-            { date: 'Sun', sales: Math.floor(apiData.todaySales * 0.9), revenue: apiData.totalRevenue * 0.14 }
-          ],
+          salesTrends: apiData.salesTrends || [],
           topStations: (apiData.topStations || []).map(station => ({
             name: station.name,
             sales: station.sales,
-            revenue: station.sales * 150 // Estimated revenue per sale
+            revenue: station.revenue
           })),
           lowStockAlerts: apiData.lowStockAlerts || []
         };

@@ -402,27 +402,81 @@ def get_dashboard_data():
         # Calculate average price per litre
         avg_price_per_litre = db.session.query(db.func.avg(Sale.price_per_litre)).scalar() or 0
         
-        # Get stations with their pump and staff counts
+        # Calculate real daily sales trends (last 7 days)
+        sales_trends = []
+        today = datetime.now()
+        days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        
+        for i in range(6, -1, -1):  # Last 7 days
+            day_date = today - timedelta(days=i)
+            day_start = day_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            day_end = day_start + timedelta(days=1)
+            
+            # Get sales for this day
+            daily_sales = Sale.query.filter(
+                Sale.sale_timestamp >= day_start,
+                Sale.sale_timestamp < day_end
+            ).all()
+            
+            daily_count = len(daily_sales)
+            daily_revenue = sum(sale.total_amount for sale in daily_sales)
+            
+            sales_trends.append({
+                'date': days[day_date.weekday()],
+                'sales': daily_count,
+                'revenue': float(daily_revenue)
+            })
+        
+        # Calculate real fuel type distribution based on actual sales
+        fuel_types = ['Regular', 'Premium', 'Diesel']
+        fuel_type_data = []
+        total_fuel_litres = 0
+        
+        for fuel_type in fuel_types:
+            # Get total litres sold for this fuel type
+            fuel_litres = db.session.query(db.func.sum(Sale.litres)).join(Pump).filter(
+                Pump.fuel_type == fuel_type
+            ).scalar() or 0
+            total_fuel_litres += fuel_litres
+        
+        # Calculate percentages
+        for fuel_type in fuel_types:
+            fuel_litres = db.session.query(db.func.sum(Sale.litres)).join(Pump).filter(
+                Pump.fuel_type == fuel_type
+            ).scalar() or 0
+            
+            percentage = round((fuel_litres / total_fuel_litres * 100), 1) if total_fuel_litres > 0 else 0
+            
+            fuel_type_data.append({
+                'name': fuel_type,
+                'value': percentage,
+                'litres': float(fuel_litres),
+                'color': '#3B82F6' if fuel_type == 'Regular' else '#10B981' if fuel_type == 'Premium' else '#F59E0B'
+            })
+        
+        # Calculate real revenue per station
         stations_data = []
         stations = Station.query.filter_by(is_active=True).all()
         for station in stations:
+            # Calculate actual revenue from sales
+            station_revenue = 0
+            station_sales_count = 0
+            
+            for pump in station.pumps:
+                for sale in pump.sales:
+                    station_revenue += sale.total_amount
+                    station_sales_count += 1
+            
             stations_data.append({
                 'name': station.name,
                 'pumps': len(station.pumps),
                 'staff': len(station.staff),
-                'sales': len([sale for pump in station.pumps for sale in pump.sales])
+                'sales': station_sales_count,
+                'revenue': float(station_revenue)
             })
         
-        # Fuel type distribution (mock for now since we don't have inventory)
-        fuel_types = ['Regular', 'Premium', 'Diesel']
-        fuel_type_data = []
-        for fuel_type in fuel_types:
-            pump_count = Pump.query.filter_by(fuel_type=fuel_type).count()
-            fuel_type_data.append({
-                'name': fuel_type,
-                'value': pump_count,
-                'color': '#3B82F6' if fuel_type == 'Regular' else '#10B981' if fuel_type == 'Premium' else '#F59E0B'
-            })
+        # Sort by revenue and get top 5
+        stations_data.sort(key=lambda x: x['revenue'], reverse=True)
         
         dashboard_data = {
             'totalRevenue': float(total_revenue),
@@ -434,6 +488,7 @@ def get_dashboard_data():
             'avgPricePerLitre': float(avg_price_per_litre) if avg_price_per_litre else 0,
             'recentSales': [sale.to_dict() for sale in recent_sales],
             'fuelTypeData': fuel_type_data,
+            'salesTrends': sales_trends,
             'topStations': stations_data[:5],  # Top 5 stations
             'lowStockAlerts': []  # Empty for now, can be populated later
         }
