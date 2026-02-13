@@ -1,357 +1,353 @@
-# Phase 4 Full-Stack Application Project Template
+# Smart Petro - Petrol Station Management System
 
-## Learning Goals
+A comprehensive full-stack web application for managing petrol stations, staff, pumps, and sales operations. Built with Flask backend and Next.js frontend, featuring real-time analytics, dynamic UI components, and complete CRUD functionality.
 
-- Discuss the basic directory structure of a full-stack Flask/React application.
-- Carry out the first steps in creating your Phase 4 project.
+## Application Overview
 
----
+Smart Petro is a professional petrol station management system designed to streamline operations across multiple locations. The application provides station managers with tools to track sales performance, manage staff assignments, monitor pump operations, and analyze business metrics through an intuitive dashboard interface.
 
-## Introduction
+### Key Features
 
-Fork and clone this lesson for a template for your full-stack application. Take
-a look at the directory structure before we begin (NOTE: node_modules will be
-generated in a subsequent step):
-
-```console
-$ tree -L 2
-$ # the -L argument limits the depth at which we look into the directory structure
-.
-├── CONTRIBUTING.md
-├── LICENSE.md
-├── Pipfile
-├── README.md
-├── client
-│   ├── README.md
-│   ├── package.json
-│   ├── public
-│   └── src
-└── server
-    ├── app.py
-    ├── config.py
-    ├── models.py
-    └── seed.py
-```
-
-A `migrations` folder will be added to the `server` directory in a later step.
-
-The `client` folder contains a basic React application, while the `server`
-folder contains a basic Flask application. You will adapt both folders to
-implement the code for your project .
-
-NOTE: If you did not previously install `tree` in your environment setup, MacOS
-users can install this with the command `brew install tree`. WSL and Linux users
-can run `sudo apt-get install tree` to download it as well.
-
-## Where Do I Start?
-
-Just as with your Phase 3 Project, this will likely be one of the biggest
-projects you've undertaken so far. Your first task should be creating a Git
-repository to keep track of your work and roll back any undesired changes.
-
-### Removing Existing Git Configuration
-
-If you're using this template, start off by removing the existing metadata for
-Github and Canvas. Run the following command to carry this out:
-
-```console
-$ rm -rf .git .canvas
-```
-
-The `rm` command removes files from your computer's memory. The `-r` flag tells
-the console to remove _recursively_, which allows the command to remove
-directories and the files within them. `-f` removes them permanently.
-
-`.git` contains this directory's configuration to track changes and push to
-Github (you want to track and push _your own_ changes instead), and `.canvas`
-contains the metadata to create a Canvas page from your Git repo. You don't have
-the permissions to edit our Canvas course, so it's not worth keeping around.
-
-### Creating Your Own Git Repo
-
-First things first- rename this directory! Once you have an idea for a name,
-move one level up with `cd ..` and run
-`mv python-p4-project-template <new-directory-name>` to change its name (replace
-<new-directory-name> with an appropriate project directory name).
-
-> **Note: If you typed the `mv` command in a terminal within VS Code, you should
-> close VS Code then reopen it.**
-
-> **Note: `mv` actually stands for "move", but your computer interprets this
-> rename as a move from a directory with the old name to a directory with a new
-> name.**
-
-`cd` back into your new directory and run `git init` to create a local git
-repository. Add all of your local files to version control with `git add --all`,
-then commit them with `git commit -m'initial commit'`. (You can change the
-message here- this one is just a common choice.)
-
-Navigate to [GitHub](https://github.com). In the upper-right corner of the page,
-click on the "+" dropdown menu, then select "New repository". Enter the name of
-your local repo, choose whether you would like it to be public or private, make
-sure "Initialize this repository with a README" is unchecked (you already have
-one), then click "Create repository".
-
-Head back to the command line and enter
-`git remote add origin git@github.com:github-username/new-repository-name.git`.
-NOTE: Replace `github-username` with your github username, and
-`new-repository-name` with the name of your new repository. This command will
-map the remote repository to your local repository. Finally, push your first
-commit with `git push -u origin main`.
-
-Your project is now version-controlled locally and online. This will allow you
-to create different versions of your project and pick up your work on a
-different machine if the need arises.
+- **Station Management**: Complete CRUD operations for petrol station locations
+- **Staff Administration**: Employee management with role assignments and station associations
+- **Pump Operations**: Track fuel pump status, types, and maintenance
+- **Sales Analytics**: Real-time sales tracking with performance metrics
+- **Dashboard Analytics**: Interactive charts and KPI monitoring
+- **User Authentication**: Secure JWT-based login system
+- **Responsive Design**: Mobile-friendly interface with dynamic layouts
 
 ---
 
-## Setup
+## Technology Stack
 
-### `server/`
+### Backend
+- **Flask**: Python web framework for API development
+- **SQLAlchemy**: ORM for database operations
+- **Flask-RESTful**: RESTful API development
+- **Flask-Migrate**: Database migration management
+- **SQLite**: Lightweight database for development
+- **Flask-CORS**: Cross-origin resource sharing
+- **JWT**: JSON Web Token authentication
 
-The `server/` directory contains all of your backend code.
+### Frontend
+- **Next.js**: React framework with server-side rendering
+- **React**: Component-based UI library
+- **Formik**: Form handling and validation
+- **Yup**: Schema validation library
+- **Recharts**: Data visualization components
+- **Lucide React**: Icon library
+- **Custom CSS**: Tailored styling system
 
-`app.py` is your Flask application. You'll want to use Flask to build a simple
-API backend like we have in previous modules. You should use Flask-RESTful for
-your routes. You should be familiar with `models.py` and `seed.py` by now, but
-remember that you will need to use Flask-SQLAlchemy, Flask-Migrate, and
-SQLAlchemy-Serializer instead of SQLAlchemy and Alembic in your models.
+## Installation and Setup
 
-The project contains a default `Pipfile` with some basic dependencies. You may
-adapt the `Pipfile` if there are additional dependencies you want to add for
-your project.
+### Prerequisites
+- Python 3.8+
+- Node.js 16+
+- npm or yarn package manager
 
-To download the dependencies for the backend server, run:
+### Backend Setup
 
-```console
+1. Navigate to the server directory:
+```bash
+cd server
+```
+
+2. Install Python dependencies:
+```bash
 pipenv install
 pipenv shell
 ```
 
-You can run your Flask API on [`localhost:5555`](http://localhost:5555) by
-running:
-
-```console
-python server/app.py
-```
-
-Check that your server serves the default route `http://localhost:5555`. You
-should see a web page with the heading "Project Server".
-
-### `client/`
-
-The `client/` directory contains all of your frontend code. The file
-`package.json` has been configured with common React application dependencies,
-include `react-router-dom`. The file also sets the `proxy` field to forward
-requests to `"http://localhost:5555". Feel free to change this to another port-
-just remember to configure your Flask app to use another port as well!
-
-To download the dependencies for the frontend client, run:
-
-```console
-npm install --prefix client
-```
-
-You can run your React app on [`localhost:3000`](http://localhost:3000) by
-running:
-
-```sh
-npm start --prefix client
-```
-
-Check that your the React client displays a default page
-`http://localhost:3000`. You should see a web page with the heading "Project
-Client".
-
-## Generating Your Database
-
-NOTE: The initial project directory structure does not contain the `instance` or
-`migrations` folders. Change into the `server` directory:
-
-```console
-cd server
-```
-
-Then enter the commands to create the `instance` and `migrations` folders and
-the database `app.db` file:
-
-```
+3. Initialize the database:
+```bash
 flask db init
 flask db upgrade head
+python seed.py
 ```
 
-Type `tree -L 2` within the `server` folder to confirm the new directory
-structure:
-
-```console
-.
-├── app.py
-├── config.py
-├── instance
-│   └── app.db
-├── migrations
-│   ├── README
-│   ├── __pycache__
-│   ├── alembic.ini
-│   ├── env.py
-│   ├── script.py.mako
-│   └── versions
-├── models.py
-└── seed.py
+4. Start the Flask server:
+```bash
+python app.py
 ```
 
-Edit `models.py` and start creating your models. Import your models as needed in
-other modules, i.e. `from models import ...`.
+The backend API will be available at `http://localhost:5555`
 
-Remember to regularly run
-`flask db revision --autogenerate -m'<descriptive message>'`, replacing
-`<descriptive message>` with an appropriate message, and `flask db upgrade head`
-to track your modifications to the database and create checkpoints in case you
-ever need to roll those modifications back.
+### Frontend Setup
 
-> **Tip: It's always a good idea to start with an empty revision! This allows
-> you to roll all the way back while still holding onto your database. You can
-> create this empty revision with `flask db revision -m'Create DB'`.**
-
-If you want to seed your database, now would be a great time to write out your
-`seed.py` script and run it to generate some test data. Faker has been included
-in the Pipfile if you'd like to use that library.
-
----
-
-#### `config.py`
-
-When developing a large Python application, you might run into a common issue:
-_circular imports_. A circular import occurs when two modules import from one
-another, such as `app.py` and `models.py`. When you create a circular import and
-attempt to run your app, you'll see the following error:
-
-```console
-ImportError: cannot import name
+1. Navigate to the client directory:
+```bash
+cd client
 ```
 
-If you're going to need an object in multiple modules like `app` or `db`,
-creating a _third_ module to instantiate these objects can save you a great deal
-of circular grief. Here's a good start to a Flask config file (you may need more
-if you intend to include features like authentication and passwords):
-
-```py
-# Standard library imports
-
-# Remote library imports
-from flask import Flask
-from flask_cors import CORS
-from flask_migrate import Migrate
-from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
-
-# Local imports
-
-# Instantiate app, set attributes
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.json.compact = False
-
-# Define metadata, instantiate db
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
-db = SQLAlchemy(metadata=metadata)
-migrate = Migrate(app, db)
-db.init_app(app)
-
-# Instantiate REST API
-api = Api(app)
-
-# Instantiate CORS
-CORS(app)
-
+2. Install Node.js dependencies:
+```bash
+npm install
 ```
 
-Now let's review that last line...
-
-#### CORS
-
-CORS (Cross-Origin Resource Sharing) is a system that uses HTTP headers to
-determine whether resources from different servers-of-origin can be accessed. If
-you're using the fetch API to connect your frontend to your Flask backend, you
-need to configure CORS on your Flask application instance. Lucky for us, that
-only takes one line:
-
-```py
-CORS(app)
-
+3. Start the development server:
+```bash
+npm run dev
 ```
 
-By default, Flask-CORS enables CORS on all routes in your application with all
-fetching servers. You can also specify the resources that allow CORS. The
-following specifies that routes beginning with `api/` allow CORS from any
-originating server:
+The frontend application will be available at `http://localhost:3001`
 
-```py
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+## Database Models
 
+The application uses SQLAlchemy ORM with the following data models:
+
+### Station Model
+- **id**: Primary key
+- **name**: Station name (required)
+- **location**: Physical address
+- **manager**: Station manager name
+- **phone**: Contact phone number
+- **email**: Contact email address
+- **created_at**: Timestamp
+
+**Relationships**: One-to-many with Pump and Staff models
+
+### Pump Model
+- **id**: Primary key
+- **pump_number**: Unique pump identifier
+- **fuel_type**: Type of fuel (Regular, Premium, Diesel, etc.)
+- **station_id**: Foreign key to Station
+- **created_at**: Timestamp
+
+**Relationships**: Many-to-one with Station, one-to-many with Sale
+
+### Staff Model
+- **id**: Primary key
+- **name**: Employee full name (required)
+- **email**: Employee email address
+- **phone**: Contact phone number
+- **role**: Job position/role
+- **station_id**: Foreign key to Station
+- **created_at**: Timestamp
+
+**Relationships**: Many-to-one with Station
+
+### Sale Model
+- **id**: Primary key
+- **litres**: Amount of fuel sold
+- **total_amount**: Total sale price
+- **fuel_type**: Type of fuel sold
+- **pump_id**: Foreign key to Pump
+- **created_at**: Timestamp
+
+**Relationships**: Many-to-one with Pump
+
+### User Model
+- **id**: Primary key
+- **username**: Unique username
+- **email**: User email address
+- **password_hash**: Encrypted password
+- **role**: User role/permissions
+- **created_at**: Timestamp
+
+## API Endpoints
+
+### Authentication Routes
+- `POST /auth/register` - User registration
+- `POST /auth/login` - User authentication
+
+### Station Routes
+- `GET /stations` - Retrieve all stations
+- `POST /stations` - Create new station
+- `GET /stations/<id>` - Get specific station
+- `PATCH /stations/<id>` - Update station
+- `DELETE /stations/<id>` - Delete station
+
+### Pump Routes
+- `GET /pumps` - Retrieve all pumps
+- `POST /pumps` - Create new pump
+- `GET /pumps/<id>` - Get specific pump
+- `PATCH /pumps/<id>` - Update pump
+- `DELETE /pumps/<id>` - Delete pump
+- `GET /stations/<id>/pumps` - Get pumps by station
+
+### Staff Routes
+- `GET /staff` - Retrieve all staff
+- `POST /staff` - Create new staff member
+- `GET /staff/<id>` - Get specific staff member
+- `PATCH /staff/<id>` - Update staff member
+- `DELETE /staff/<id>` - Delete staff member
+- `GET /stations/<id>/staff` - Get staff by station
+
+### Sales Routes
+- `GET /sales` - Retrieve all sales
+- `POST /sales` - Create new sale
+- `GET /sales/<id>` - Get specific sale
+- `PATCH /sales/<id>` - Update sale
+- `DELETE /sales/<id>` - Delete sale
+
+### Dashboard Route
+- `GET /dashboard` - Get analytics and KPI data
+
+## Frontend Components
+
+### Pages
+- **Dashboard**: Analytics overview with charts and KPIs
+- **Stations**: Station listing and management
+- **Station Details**: Individual station management with pumps and staff
+- **Sales**: Sales tracking and analytics
+
+### Key Components
+- **Navigation**: Sidebar navigation with user profile
+- **StationCard**: Station display component
+- **PumpManager**: Pump CRUD operations with Formik validation
+- **StaffManager**: Staff CRUD operations with Formik validation
+- **SaleForm**: Sales entry form with validation
+- **Dashboard Charts**: Interactive data visualizations
+
+## Features
+
+### Authentication System
+- JWT-based authentication
+- User registration and login
+- Protected routes and session management
+- Role-based access control
+
+### Data Management
+- Complete CRUD operations for all resources
+- Form validation using Formik and Yup
+- Real-time data updates
+- Relationship management between entities
+
+### User Interface
+- Responsive design for mobile and desktop
+- Dynamic card layouts with view transformations
+- Professional dark theme with consistent styling
+- Interactive charts and data visualizations
+- Modal-based editing interfaces
+
+### Analytics Dashboard
+- Real-time KPI monitoring
+- Sales trend analysis
+- Fuel type distribution charts
+- Top performing stations tracking
+- Recent sales activity feed
+
+## Usage
+
+### Getting Started
+1. Complete the installation steps above
+2. Access the application at `http://localhost:3001`
+3. Register a new account or use existing credentials
+4. Navigate through the dashboard to explore features
+
+### Managing Stations
+- View all stations from the Stations page
+- Click on individual stations to manage pumps and staff
+- Add new stations using the form interface
+- Edit or delete existing stations as needed
+
+### Staff Management
+- Access staff management from individual station pages
+- Add new staff members with role assignments
+- Update staff information and station assignments
+- Remove staff members when necessary
+
+### Pump Operations
+- Manage pumps from the station detail pages
+- Add new pumps with fuel type specifications
+- Update pump information and status
+- Track pump performance and maintenance
+
+### Sales Tracking
+- Record new sales transactions
+- View sales analytics and trends
+- Monitor performance by station and fuel type
+- Generate reports for business insights
+
+## Development
+
+### Project Structure
+```
+Petrol-Station-Tracker/
+├── client/                 # Next.js frontend
+│   ├── src/
+│   │   ├── app/           # Next.js app router pages
+│   │   ├── components/    # Reusable React components
+│   │   └── lib/          # Utility functions and API calls
+├── server/                # Flask backend
+│   ├── app.py            # Main Flask application
+│   ├── models.py         # SQLAlchemy models
+│   ├── config.py         # Application configuration
+│   └── seed.py           # Database seeding script
+└── README.md
 ```
 
-You can also set this up resource-by-resource by importing and using the
-`@cross_origin` decorator:
+### Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes with proper testing
+4. Submit a pull request with detailed description
 
-```py
-@app.route("/")
-@cross_origin()
-def howdy():
-  return "Howdy partner!"
+### Testing
+- Backend: Run Flask tests with `python -m pytest`
+- Frontend: Run React tests with `npm test`
+- Integration: Test API endpoints with Postman or similar tools
 
-```
+## Future Enhancements
 
----
+The following features are planned for future releases to enhance the application's functionality and user experience:
 
-## Updating Your README.md
+### Core Features
+- **Search Functionality**: Global search bar to find stations, staff, pumps, and sales records quickly
+- **User Avatar System**: Customizable profile pictures and avatar management for user accounts
+- **Automatic Sales Recording**: Integration with pump systems for real-time sales data capture without manual entry
 
-`README.md` is a Markdown file that describes your project. These files can be
-used in many different ways- you may have noticed that we use them to generate
-entire Canvas lessons- but they're most commonly used as homepages for online
-Git repositories. **When you develop something that you want other people to
-use, you need to have a README.**
+### Advanced Analytics
+- **Predictive Analytics**: Fuel demand forecasting based on historical data and trends
+- **Performance Benchmarking**: Compare station performance against industry standards and peer stations
+- **Custom Report Generation**: Automated report creation with scheduling and email delivery
+- **Advanced Data Visualization**: Interactive maps, heat maps, and advanced chart types
 
-Markdown is not a language that we cover in Flatiron's Software Engineering
-curriculum, but it's not a particularly difficult language to learn (if you've
-ever left a comment on Reddit, you might already know the basics). Refer to the
-cheat sheet in this lesson's resources for a basic guide to Markdown.
+### User Experience Improvements
+- **Mobile Application**: Native iOS and Android apps for on-the-go management
+- **Dark/Light Theme Toggle**: User preference for interface appearance
+- **Notification System**: Real-time alerts for low fuel levels, maintenance schedules, and sales milestones
+- **Multi-language Support**: Internationalization for different regions and languages
 
-### What Goes into a README?
+### Operational Features
+- **Inventory Management**: Track fuel levels, deliveries, and automatic reorder points
+- **Maintenance Scheduling**: Pump maintenance tracking with automated reminders
+- **Shift Management**: Staff scheduling and shift handover documentation
+- **Customer Loyalty Program**: Integration with customer rewards and loyalty systems
 
-This README should serve as a template for your own- go through the important
-files in your project and describe what they do. Each file that you edit (you
-can ignore your migration files) should get at least a paragraph. Each function
-should get a small blurb.
+### Technical Enhancements
+- **Real-time Data Sync**: WebSocket integration for live data updates across all connected clients
+- **API Rate Limiting**: Enhanced security and performance optimization
+- **Data Export/Import**: Bulk data operations and integration with external systems
+- **Audit Trail**: Complete logging of all system changes and user actions
 
-You should descibe your application first, and with a good level of detail. The
-rest should be ordered by importance to the user. (Probably routes next, then
-models.)
+### Security and Compliance
+- **Two-Factor Authentication**: Enhanced security for user accounts
+- **Role-based Permissions**: Granular access control for different user types
+- **Data Encryption**: Enhanced data protection for sensitive information
+- **Compliance Reporting**: Automated generation of regulatory compliance reports
 
-Screenshots and links to resources that you used throughout are also useful to
-users and collaborators, but a little more syntactically complicated. Only add
-these in if you're feeling comfortable with Markdown.
+### Integration Capabilities
+- **Payment Processing**: Integration with payment gateways for customer transactions
+- **Accounting Software**: Direct integration with popular accounting platforms
+- **Government Reporting**: Automated tax and regulatory report submissions
+- **Third-party APIs**: Weather data, traffic patterns, and market pricing integration
 
----
+These enhancements will be prioritized based on user feedback and business requirements to ensure the application continues to meet evolving needs in the petrol station management industry.
 
-## Conclusion
+## License
 
-A lot of work goes into a full-stack application, but it all relies on concepts
-that you've practiced thoroughly throughout this phase. Hopefully this template
-and guide will get you off to a good start with your Phase 4 Project.
+This project is developed as part of a Phase 4 Full-Stack Application assignment. All rights reserved.
 
-Happy coding!
+## Project Team
 
----
+### Scrum Master
+- **Gideon Kimaiyo**
 
-## Resources
+### Contributors
+- **Jeremy Marube**
+- **Akumu Amolo**
 
-- [Setting up a respository - Atlassian](https://www.atlassian.com/git/tutorials/setting-up-a-repository)
-- [Create a repo- GitHub Docs](https://docs.github.com/en/get-started/quickstart/create-a-repo)
-- [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
-- [Python Circular Imports - StackAbuse](https://stackabuse.com/python-circular-imports/)
-- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/)
+## Contact
+
+For questions or support regarding this application, please contact the development team or refer to the project documentation.

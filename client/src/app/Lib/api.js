@@ -61,7 +61,7 @@ export async function addPump(stationId, pump) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      pump: pump.pump_number,
+      pump_number: pump.pump_number,
       fuel_type: pump.fuel_type,
       station_id: stationId,
     }),
